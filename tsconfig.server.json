@@ -1,0 +1,16 @@
+// tsconfig.server.json file
+
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "resolveJsonModule": true
+  },
+  "include": ["socket-server.ts", "models/**/*.ts"] // सर्वर और मॉडल्स को शामिल करें
+}
