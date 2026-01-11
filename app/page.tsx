@@ -307,15 +307,15 @@ export default function HomePage() {
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 flex">
 
       {/* Chat List Sidebar */}
-      <div className="w-1/4 bg-white border-r border-gray-200 shadow-md rounded-l-xl p-4 mr-4 flex flex-col">
+       <div className="w-1/4 bg-white border-r border-gray-200 shadow-md rounded-l-xl p-4 mr-4 flex flex-col">
         <h3 className="text-2xl font-extrabold mb-4 text-blue-700">Conversations</h3>
 
         <p className="text-sm font-semibold text-gray-800 mb-4">Your ID: <span className="text-blue-600 font-mono text-xs">{currentUserId || "loading..."}</span></p>
 
-        <div className="space-y-2 flex-1 flex flex-col overflow-hidden">
+        <div className="space-y-2 flex-1 flex flex-col overflow-hidden"> 
 
           {/* Recent Chats Section */}
-          <h4 className="text-sm font-semibold text-gray-600 uppercase pt-2 border-t">Recent Chats ({chatList.length})</h4>
+           <h4 className="text-sm font-semibold text-gray-600 uppercase pt-2 border-t">Recent Chats ({chatList.length})</h4>
 
           <div className="overflow-y-auto max-h-56 pb-2">
             {chatList.map((partner) => (
@@ -352,10 +352,10 @@ export default function HomePage() {
             {chatList.length === 0 && (
               <p className="text-sm text-gray-500 italic pt-2">No recent chats.</p>
             )}
-          </div>
+          </div> 
 
-          {/* 👥 NEW: All Users Section */}
-          <h4 className="text-sm font-semibold text-gray-600 uppercase mt-4 pt-2 border-t">All Users ({allUsers.length})</h4>
+          {/* 👥 NEW: All Users Section  */}
+           <h4 className="text-sm font-semibold text-gray-600 uppercase mt-4 pt-2 border-t">All Users ({allUsers.length})</h4>
           <div className="overflow-y-auto flex-1">
             {allUsers.length === 0 && (
               <p className="text-sm text-gray-500 italic pt-2">No other users found in database.</p>
@@ -378,10 +378,10 @@ export default function HomePage() {
                 </div>
               )
             })}
-          </div>
+          </div> 
 
         </div>
-      </div>
+      </div> *
 
       {/* Chat Window Area */}
       <div className="w-3/4 flex flex-col bg-white rounded-r-xl shadow-lg h-[700px]">
