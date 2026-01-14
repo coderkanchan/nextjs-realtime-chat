@@ -424,7 +424,9 @@ export default function SignupPage() {
 
           <button
             disabled={loading}
-            className="w-full bg-blue-600 text-white p-3 hover:bg-blue-700 cursor-pointer rounded-lg font-bold disabled:opacity-50"
+            className={`w-full text-lg  p-3 py-4 rounded-lg font-bold  
+              ${loading ? "text-gray-500 disabled:bg-gray-300 cursor-not-allowed"
+                : "text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
           >
             {loading ? "Creating..." : "Sign Up"}
           </button>
