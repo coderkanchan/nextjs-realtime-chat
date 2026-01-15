@@ -357,13 +357,11 @@ export default function LoginPage() {
     // router.push("/chat");
 
 
-    toast.success("Login successful", {
-      duration: 1200,
-    });
+    toast.success("Login successful", { duration: 800,});
 
     setTimeout(() => {
-      router.push("/chat");
-    }, 1200);
+      router.push("/welcome");
+    }, 800);
   };
 
   return (

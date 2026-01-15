@@ -346,13 +346,11 @@ export default function SignupPage() {
     // toast.success("Account created successfully");
     // router.push("/login");
 
-    toast.success("Account created successfully", {
-      duration: 1200,
-    });
+    toast.success("Account created successfully", { duration: 800,});
 
     setTimeout(() => {
-      router.push("/login");
-    }, 1200);
+      router.push("/welcome");
+    }, 800);
   };
 
   return (
