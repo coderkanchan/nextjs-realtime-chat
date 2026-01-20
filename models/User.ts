@@ -1,24 +1,45 @@
 
-// import mongoose, { Schema } from "mongoose";
+// import mongoose, { Schema, models, model } from "mongoose";
 
-// const userSchema = new Schema({
-//   username: { type: String, unique: true, required: true },
-//   email: { type: String, unique: true, required: true },
-//   password: { type: String, required: true },
-//   isOnline: { type: Boolean, default: false },
-// }, { timestamps: true });
+// const userSchema = new Schema(
+//   {
+//     username: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       trim: true,
+//     },
+//     email: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       lowercase: true,
+//     },
+//     password: {
+//       type: String,
+//       required: true,
+//     },
+//     isOnline: {
+//       type: Boolean,
+//       default: false,
+//     },
+//   },
+//   { timestamps: true }
+// );
 
-// export const User =
-//   mongoose.models.User || mongoose.model("User", userSchema);
+// export const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 
 
 
 
 
-import mongoose, { Schema, models, model } from "mongoose";
 
-const userSchema = new Schema(
+
+
+import mongoose, { Schema } from "mongoose";
+
+const UserSchema = new Schema(
   {
     username: {
       type: String,
@@ -36,12 +57,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    isOnline: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+export const User =
+  mongoose.models.User || mongoose.model("User", UserSchema);

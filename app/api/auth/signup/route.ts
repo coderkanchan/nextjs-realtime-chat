@@ -18,7 +18,10 @@
 
 //     await connectDB();
 
-//     const exists = await User.findOne({ $or: [{ username }, { email }] });
+//     const exists = await User.findOne({
+//       $or: [{ username }, { email }],
+//     });
+
 //     if (exists) {
 //       return NextResponse.json(
 //         { error: "Username or email already exists" },
@@ -26,33 +29,49 @@
 //       );
 //     }
 
-//     const hashed = await bcrypt.hash(password, 10);
-//     const user = await User.create({ username, email, password: hashed });
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const user = await User.create({
+//       username,
+//       email,
+//       password: hashedPassword,
+//     });
+
+//     if (!process.env.JWT_SECRET) {
+//       throw new Error("JWT_SECRET is not defined");
+//     }
 
 //     const token = jwt.sign(
 //       { username: user.username },
-//       process.env.JWT_SECRET!,
+//       process.env.JWT_SECRET,
 //       { expiresIn: "7d" }
 //     );
 
 //     const res = NextResponse.json(
-//       { username: user.username, message: "Signup successful" },
+//       {
+//         username: user.username,
+//         message: "Signup successful",
+//       },
 //       { status: 201 }
 //     );
 
 //     res.cookies.set("token", token, {
 //       httpOnly: true,
-//       secure: true,
-//       sameSite: "strict",
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "lax",
+//       path: "/",
 //     });
 
 //     return res;
-//   } catch {
-//     return NextResponse.json({ error: "Signup failed" }, { status: 500 });
+//   } catch (err: any) {
+//     console.error("SIGNUP ERROR 👉", err);
+
+//     return NextResponse.json(
+//       { error: err.message || "Signup failed" },
+//       { status: 500 }
+//     );
 //   }
 // }
-
-
 
 
 
@@ -85,49 +104,59 @@
 //     if (exists) {
 //       return NextResponse.json(
 //         { error: "Username or email already exists" },
-//         { status: 400 }
+//         { status: 409 }
 //       );
 //     }
 
-//     const hashed = await bcrypt.hash(password, 10);
+//     const hashedPassword = await bcrypt.hash(password, 10);
 
 //     const user = await User.create({
 //       username,
 //       email,
-//       password: hashed,
+//       password: hashedPassword,
 //     });
+
+//     if (!process.env.JWT_SECRET) {
+//       throw new Error("JWT_SECRET is not defined");
+//     }
 
 //     const token = jwt.sign(
 //       { username: user.username },
-//       process.env.JWT_SECRET!,
+//       process.env.JWT_SECRET,
 //       { expiresIn: "7d" }
 //     );
 
 //     const res = NextResponse.json(
-//       {
-//         message: "Signup successful",
-//         username: user.username,
-//       },
+//       { username: user.username, message: "Signup successful" },
 //       { status: 201 }
 //     );
 
 //     res.cookies.set("token", token, {
 //       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production", // ✅ FIX
-//       sameSite: "strict",
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "lax",
 //       path: "/",
 //     });
 
 //     return res;
-//   } catch (err) {
-//     console.error("SIGNUP ERROR 👉", err); // ⭐ IMPORTANT
+
+//   } catch (err: any) {
+//     console.error("SIGNUP ERROR 👉", err);
+
+//     // ⭐ PROFESSIONAL DUPLICATE KEY HANDLING
+//     if (err.code === 11000) {
+//       return NextResponse.json(
+//         { error: "Username or email already exists" },
+//         { status: 409 }
+//       );
+//     }
+
 //     return NextResponse.json(
 //       { error: "Signup failed" },
 //       { status: 500 }
 //     );
 //   }
 // }
-
 
 
 
@@ -174,8 +203,9 @@ export async function POST(req: Request) {
       throw new Error("JWT_SECRET is not defined");
     }
 
+    // ✅ FIX: token me userId add
     const token = jwt.sign(
-      { username: user.username },
+      { userId: user._id.toString() },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
