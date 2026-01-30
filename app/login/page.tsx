@@ -1,5 +1,5 @@
-
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -30,14 +30,14 @@ export default function LoginPage() {
       return;
     }
 
-    // toast.success("Welcome back 👋");
-    // router.push("/chat");
+    // --- LOGIC FIX: Save username for the Chat App ---
+    localStorage.setItem("username", data.username);
+    // ------------------------------------------------
 
-
-    toast.success("Login successful", { duration: 800,});
+    toast.success("Login successful", { duration: 800 });
 
     setTimeout(() => {
-      router.push("/welcome");
+      router.push("/welcome"); 
     }, 800);
   };
 
@@ -75,11 +75,9 @@ export default function LoginPage() {
 
           <button
             disabled={loading}
-            // className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold disabled:opacity-50"
             className={`w-full text-lg  p-3 py-4 rounded-lg font-bold  
               ${loading ? "text-gray-500 disabled:bg-gray-300 cursor-not-allowed"
-                 : "text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
-
+                : "text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
           >
             {loading ? "Signing in..." : "Enter Chat"}
           </button>

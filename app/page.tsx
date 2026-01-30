@@ -6,7 +6,7 @@ import { MessageCircle, Shield, Zap } from "lucide-react";
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gray-800 text-black font-sans">
-      {/* Navigation */}
+     
       <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="bg-blue-600 p-2 rounded-lg">
@@ -20,7 +20,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+    
       <header className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h1 className=" text-white text-6xl md:text-7xl font-bold mb-6 ">
           Connect with anyone, <br />
@@ -37,7 +37,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Features Section */}
+  
       <section className="bg-gray-800 py-20">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
           <div className="p-8 bg-blue-100 hover:bg-white  hover:shodow-xl  cursor-pointer rounded-2xl border border-gray-100 shadow-sm">

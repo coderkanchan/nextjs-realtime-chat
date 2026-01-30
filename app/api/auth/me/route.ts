@@ -5,7 +5,7 @@ import { User } from "@/models/User";
 
 export async function GET(req: Request) {
   try {
-    // 1️⃣ Get token from cookies
+    
     const cookieHeader = req.headers.get("cookie");
     const token = cookieHeader
       ?.split("; ")
@@ -23,7 +23,6 @@ export async function GET(req: Request) {
       throw new Error("JWT_SECRET is not defined");
     }
 
-    // 2️⃣ Verify token
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
@@ -34,7 +33,6 @@ export async function GET(req: Request) {
 
     await connectDB();
 
-    // 3️⃣ Find user
     const user = await User.findById(decoded.userId)
       .select("-password")
       .lean();
@@ -46,7 +44,6 @@ export async function GET(req: Request) {
       );
     }
 
-    // 4️⃣ Return user data
     return NextResponse.json(
       {
         user,

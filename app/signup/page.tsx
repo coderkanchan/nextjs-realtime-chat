@@ -1,5 +1,5 @@
-
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -49,10 +49,10 @@ export default function SignupPage() {
       return;
     }
 
-    toast.success("Account created successfully", { duration: 800,});
+    toast.success("Account created successfully", { duration: 800 });
 
     setTimeout(() => {
-      router.push("/welcome");
+      router.push("/login"); 
     }, 800);
   };
 
@@ -96,7 +96,6 @@ export default function SignupPage() {
             </button>
           </div>
 
-          {/* Password strength */}
           <div className="mb-3">
             <div className="flex gap-1">
               {[1, 2, 3, 4].map((n) => (
@@ -111,7 +110,6 @@ export default function SignupPage() {
               Use 8+ chars, uppercase, number & symbol
             </p>
           </div>
-
 
           <input
             type="password"
