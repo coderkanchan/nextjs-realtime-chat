@@ -6,7 +6,6 @@ import ChatWindow from "@/components/ChatWindow";
 import { useRouter } from "next/navigation";
 
 export default function ChatPage() {
-  const [socket, setSocket] = useState<any>(null);
   const [currentUser, setCurrentUser] = useState<string>("");
   const [otherUser, setOtherUser] = useState<string | null>(null);
   const [chatList, setChatList] = useState<any[]>([]);
@@ -22,9 +21,11 @@ export default function ChatPage() {
     }
     setCurrentUser(user);
 
-    // Socket Connection
-    const s = io("http://localhost:3001");
-    setSocket(s);
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+    const s = io(socketUrl, {
+      withCredentials: true,
+      transports: ["polling", "websocket"],
+    });
 
     s.emit("init", { username: user });
 
@@ -46,11 +47,6 @@ export default function ChatPage() {
   const handleSelectUser = (user: string) => {
     setOtherUser(user);
   };
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("username");
-  //   router.push("/login");
-  // };
 
   const handleLogout = async () => {
     try {
