@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import Sidebar from "@/components/Sidebar";
 import ChatWindow from "@/components/ChatWindow";
 import { useRouter } from "next/navigation";
 
 export default function ChatPage() {
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [currentUser, setCurrentUser] = useState<string>("");
   const [otherUser, setOtherUser] = useState<string | null>(null);
   const [chatList, setChatList] = useState<any[]>([]);
@@ -26,6 +27,8 @@ export default function ChatPage() {
       withCredentials: true,
       transports: ["polling", "websocket"],
     });
+
+    setSocket(s);
 
     s.emit("init", { username: user });
 
