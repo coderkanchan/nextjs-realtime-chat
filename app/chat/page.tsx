@@ -22,7 +22,7 @@ export default function ChatPage() {
     }
     setCurrentUser(user);
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
     const s = io(socketUrl, {
       withCredentials: true,
       transports: ["polling", "websocket"],

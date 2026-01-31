@@ -6,7 +6,7 @@ import { Message } from "./models/Message";
 import { User } from "./models/User";
 
 const MONGO_URI = process.env.MONGO_URI!;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://nextjs-realtime-chat-murex-one.vercel.app";
 const PORT = process.env.PORT || 3001;
 
 mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
