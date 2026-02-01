@@ -64,7 +64,7 @@ export default function ChatPage() {
   if (!currentUser || !socket) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse">Loading Messenger...</div>;
 
   return (
-    <div className="flex h-[800px] bg-gray-100 p-4">
+    <div className="flex h-[700px] bg-gray-100 p-4">
       <div className="flex w-full max-w-7xl mx-auto bg-white overflow-hidden shadow-2xl rounded-3xl border border-gray-200">
         <Sidebar
           currentUser={currentUser}

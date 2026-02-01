@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-
+ 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPass, setShowPass] = useState(false);
@@ -30,9 +30,7 @@ export default function LoginPage() {
       return;
     }
 
-    // --- LOGIC FIX: Save username for the Chat App ---
     localStorage.setItem("username", data.username);
-    // ------------------------------------------------
 
     toast.success("Login successful", { duration: 800 });
 
