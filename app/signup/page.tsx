@@ -52,9 +52,7 @@ export default function SignupPage() {
     toast.success("Account created successfully", { duration: 800 });
 
     setTimeout(() => {
-
       router.push("/welcome"); 
-      
     }, 800);
   };
 
