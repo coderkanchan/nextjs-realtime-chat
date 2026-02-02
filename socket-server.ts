@@ -7,27 +7,37 @@ import { User } from "./models/User";
 
 const MONGO_URI = process.env.MONGO_URI!;
 //const FRONTEND_URL = process.env.FRONTEND_URL || "https://nextjs-realtime-chat-murex-one.vercel.app";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 const PORT = process.env.PORT || 3001;
 
-const allowedOrigins = [
-  "https://nextjs-realtime-chat-murex-one.vercel.app",
-  "http://localhost:3000"
-];
+// const allowedOrigins = [
+//   "https://nextjs-realtime-chat-murex-one.vercel.app",
+//   "http://localhost:3000"
+// ];
 
 mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
 
+// const io = new Server({
+//   cors: {
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true
+//   }
+// });
+
 const io = new Server({
   cors: {
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: FRONTEND_URL,
+    methods: ["GET", "POST"],
     credentials: true
   }
 });
+
 const onlineUsers = new Map<string, string>();
 
 io.on("connection", (socket) => {

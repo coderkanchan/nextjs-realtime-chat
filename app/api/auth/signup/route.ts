@@ -48,15 +48,15 @@ export async function POST(req: Request) {
 
     response.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      //secure: process.env.NODE_NODE_ENV === "production",
+      sameSite: "none",
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: "/",
     });
 
     return response;
 
-    // return NextResponse.json({ message: "User created successfully", user: newUser.username }, { status: 201 });
   } catch (error) {
     console.error("Signup Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
