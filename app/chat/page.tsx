@@ -14,36 +14,86 @@ export default function ChatPage() {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const router = useRouter();
 
+  // useEffect(() => {
+  //   const user = localStorage.getItem("username");
+  //   if (!user) {
+  //     router.push("/login");
+  //     return;
+  //   }
+  //   setCurrentUser(user);
+
+  //   const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
+  //   const s = io(socketUrl, {
+  //     withCredentials: true,
+  //     transports: ["polling", "websocket"],
+  //   });
+
+  //   setSocket(s);
+
+  //   s.emit("init", { username: user });
+
+  //   s.on("init", ({ users, chats, onlineList }: any) => {
+  //     setAllUsers(users);
+  //     setChatList(chats);
+  //     setOnlineUsers(onlineList);
+  //   });
+
+  //   s.on("update-online-users", (list: string[]) => {
+  //     setOnlineUsers(list);
+  //   });
+
+  //   return () => {
+  //     s.disconnect();
+  //   };
+  // }, [router]);
+
   useEffect(() => {
-    const user = localStorage.getItem("username");
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-    setCurrentUser(user);
+    const initChat = async () => {
+      console.log("Fetching user...");
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        console.log("User Data:", data);
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
-    const s = io(socketUrl, {
-      withCredentials: true,
-      transports: ["polling", "websocket"],
-    });
+        if (!res.ok || !data.user) {
+          console.log("Auth Failed");
+          router.push("/login");
+          return;
+        }
 
-    setSocket(s);
+        const username = data.user.username;
+        setCurrentUser(username);
 
-    s.emit("init", { username: user });
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
+        const s = io(socketUrl, {
+          withCredentials: true,
+          transports: ["polling", "websocket"],
+        });
 
-    s.on("init", ({ users, chats, onlineList }: any) => {
-      setAllUsers(users);
-      setChatList(chats);
-      setOnlineUsers(onlineList);
-    });
+        setSocket(s);
 
-    s.on("update-online-users", (list: string[]) => {
-      setOnlineUsers(list);
-    });
+        s.emit("init", { username });
+
+        s.on("init", ({ users, chats, onlineList }: any) => {
+          setAllUsers(users);
+          setChatList(chats);
+          setOnlineUsers(onlineList);
+        });
+
+        s.on("update-online-users", (list: string[]) => {
+          setOnlineUsers(list);
+        });
+
+      } catch (err) {
+        console.error("Chat Page Init Error:", err);
+        router.push("/login");
+      }
+    };
+
+    initChat();
 
     return () => {
-      s.disconnect();
+      if (socket) socket.disconnect();
     };
   }, [router]);
 
@@ -61,7 +111,15 @@ export default function ChatPage() {
     }
   };
 
-  if (!currentUser || !socket) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse">Loading Messenger...</div>;
+  if (!currentUser || !socket) {
+    return (
+      <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse bg-gray-900">
+        Loading Messenger...
+      </div>
+    );
+  }
+
+  // if (!currentUser || !socket) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse">Loading Messenger...</div>;
 
   return (
     <div className="flex h-[700px] bg-gray-100 p-4">

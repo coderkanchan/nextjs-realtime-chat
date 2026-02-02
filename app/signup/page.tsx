@@ -49,10 +49,11 @@ export default function SignupPage() {
       return;
     }
 
-    toast.success("Account created successfully", { duration: 800 });
+    toast.success("Account created successfully", { duration: 800 }); 
+    //localStorage.setItem("username", form.username);
 
     setTimeout(() => {
-      router.push("/welcome"); 
+      router.push("/welcome");
     }, 800);
   };
 

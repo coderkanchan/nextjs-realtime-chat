@@ -30,7 +30,7 @@ export default function LoginPage() {
       return;
     }
 
-    localStorage.setItem("username", data.username);
+    //localStorage.setItem("username", data.username);
 
     toast.success("Login successful", { duration: 800 });
 
