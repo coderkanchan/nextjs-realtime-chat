@@ -72,9 +72,15 @@ export default function ChatPage() {
 
         setSocket(s);
 
+        s.on("connect", () => {
+          console.log("✅ Socket Connected with ID:", s.id);
+          s.emit("init", { username });
+        });
+
         s.emit("init", { username });
 
         s.on("init", ({ users, chats, onlineList }: any) => {
+          console.log("RAW INIT DATA:", { users, chats, onlineList });
           setAllUsers(users);
           setChatList(chats);
           setOnlineUsers(onlineList);

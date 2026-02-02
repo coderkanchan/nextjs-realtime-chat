@@ -59,6 +59,8 @@ io.on("connection", (socket) => {
 
     io.emit("update-online-users", Array.from(onlineUsers.keys()));
 
+    console.log("Sending users to client:", users.length);
+    
     socket.emit("init", {
       users: users.map((u: any) => u.username),
       chats,
