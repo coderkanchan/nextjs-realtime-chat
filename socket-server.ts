@@ -41,31 +41,58 @@ const io = new Server({
 const onlineUsers = new Map<string, string>();
 
 io.on("connection", (socket) => {
+
+  // socket.on("init", async ({ username }) => {
+  //   if (!username) return;
+
+  //   onlineUsers.set(username, socket.id);
+
+  //   const [users, chats] = await Promise.all([
+  //     User.find({}, "username").lean(),
+  //     Message.find({
+  //       $or:
+  //         [
+  //           { senderId: username },
+  //           { receiverId: username }
+  //         ]
+  //     }).sort({ createdAt: -1 }).lean()
+  //   ]);
+
+  //   io.emit("update-online-users", Array.from(onlineUsers.keys()));
+
+  //   console.log("Sending users to client:", users.length);
+
+  //   socket.emit("init", {
+  //     users: users.map((u: any) => u.username),
+  //     chats,
+  //     onlineList: Array.from(onlineUsers.keys())
+  //   });
+  // });
+
   socket.on("init", async ({ username }) => {
-    if (!username) return;
+    try {
+      console.log("📩 Received init from:", username); // Ye Render logs mein check karna
+      if (!username) return;
+      onlineUsers.set(username, socket.id);
+      const [users, chats] = await Promise.all([
+        User.find({}, "username").lean(),
+        Message.find({
+          $or: [{ senderId: username }, { receiverId: username }],
+        }).lean(),
+      ]);
 
-    onlineUsers.set(username, socket.id);
+      console.log(`📊 Found ${users.length} users and ${chats.length} chats for ${username}`);
 
-    const [users, chats] = await Promise.all([
-      User.find({}, "username").lean(),
-      Message.find({
-        $or:
-          [
-            { senderId: username },
-            { receiverId: username }
-          ]
-      }).sort({ createdAt: -1 }).lean()
-    ]);
+      socket.emit("init", {
+        users: users.map((u: any) => u.username),
+        chats,
+        onlineList: Array.from(onlineUsers.keys()),
+      });
 
-    io.emit("update-online-users", Array.from(onlineUsers.keys()));
-
-    console.log("Sending users to client:", users.length);
-    
-    socket.emit("init", {
-      users: users.map((u: any) => u.username),
-      chats,
-      onlineList: Array.from(onlineUsers.keys())
-    });
+      console.log("✅ Data emitted back to client");
+    } catch (err) {
+      console.error("❌ Error in init event:", err); // Render logs mein ye laal dikhega agar error hua
+    }
   });
 
   socket.on("join-room", (roomId) => {
@@ -108,8 +135,8 @@ io.on("connection", (socket) => {
     }
     io.emit("update-online-users", Array.from(onlineUsers.keys()));
   });
-});
 
+});
 
 io.listen(Number(PORT));
 console.log(`🚀 Socket server running on port ${PORT}`);
