@@ -35,7 +35,8 @@ const io = new Server({
     origin: FRONTEND_URL,
     methods: ["GET", "POST"],
     credentials: true
-  }
+  },
+  transports: ["websocket", "polling"]
 });
 
 const onlineUsers = new Map<string, string>();
@@ -91,7 +92,7 @@ io.on("connection", (socket) => {
       //   onlineList: Array.from(onlineUsers.keys()),
       // });
 
-       io.to(socket.id).emit("init", {
+      io.to(socket.id).emit("init", {
         users: users.map((u: any) => u.username),
         chats,
         onlineList: Array.from(onlineUsers.keys()),

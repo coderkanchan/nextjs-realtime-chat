@@ -72,7 +72,8 @@ export default function ChatPage() {
 
         const s = io(socketUrl, {
           withCredentials: true,
-          transports: ["websocket", "polling"],
+          transports: ["websocket"],
+          upgrade: false,
           reconnectionAttempts: 5,
           timeout: 10000,
         });
