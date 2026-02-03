@@ -74,8 +74,9 @@ export default function ChatPage() {
           withCredentials: true,
           transports: ["websocket"],
           upgrade: false,
-          reconnectionAttempts: 5,
-          timeout: 10000,
+          secure: true
+          //reconnectionAttempts: 5,
+          //timeout: 10000,
         });
 
         setSocket(s);

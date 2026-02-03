@@ -36,7 +36,7 @@ const io = new Server({
     methods: ["GET", "POST"],
     credentials: true
   },
-  transports: ["websocket", "polling"]
+  transports: ["websocket"]
 });
 
 const onlineUsers = new Map<string, string>();
@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
 
   socket.on("init", async ({ username }) => {
     try {
-      console.log("📩 Received init from:", username); // Ye Render logs mein check karna
+      console.log("📩 Received init from:", username); 
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
 
       console.log("✅ Data emitted back to client");
     } catch (err) {
-      console.error("❌ Error in init event:", err); // Render logs mein ye laal dikhega agar error hua
+      console.error("❌ Error in init event:", err); 
     }
   });
 
