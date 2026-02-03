@@ -32,11 +32,11 @@ mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
 
 const io = new Server({
   cors: {
-    origin: FRONTEND_URL,
+    origin: [FRONTEND_URL, "http://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true
   },
-  transports: ["websocket"]
+  transports: ["websocket", "polling"]
 });
 
 const onlineUsers = new Map<string, string>();
@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
 
   socket.on("init", async ({ username }) => {
     try {
-      console.log("📩 Received init from:", username); 
+      console.log("📩 Received init from:", username);
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
 
       console.log("✅ Data emitted back to client");
     } catch (err) {
-      console.error("❌ Error in init event:", err); 
+      console.error("❌ Error in init event:", err);
     }
   });
 
@@ -115,6 +115,18 @@ io.on("connection", (socket) => {
       io.to(data.roomId).emit("receive-message", msg);
     } catch (err) {
       console.error("Error sending message:", err);
+    }
+  });
+
+  socket.on("mark-as-read", async ({ roomId, username }) => {
+    try {
+      await Message.updateMany(
+        { roomId, receiverId: username, readStatus: false },
+        { $set: { readStatus: true } }
+      );
+      // Optional: socket.to(roomId).emit("messages-read", { roomId });
+    } catch (err) {
+      console.error("Error marking as read:", err);
     }
   });
 

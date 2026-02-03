@@ -70,15 +70,21 @@ export default function ChatPage() {
         //   transports: ["polling", "websocket"],
         // });
 
+        // const s = io(socketUrl, {
+        //   withCredentials: true,
+        //   transports: ["websocket", "polling"],
+        //   upgrade: false,
+        //   secure: true
+        //   //reconnectionAttempts: 5,
+        //   //timeout: 10000,
+        // });
+
         const s = io(socketUrl, {
           withCredentials: true,
-          transports: ["websocket"],
-          upgrade: false,
-          secure: true
-          //reconnectionAttempts: 5,
-          //timeout: 10000,
+          transports: ["websocket", "polling"], 
+          reconnection: true,
+          reconnectionAttempts: 10, 
         });
-
         setSocket(s);
 
         // s.on("connect", () => {
