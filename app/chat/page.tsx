@@ -65,9 +65,16 @@ export default function ChatPage() {
         setCurrentUser(username);
 
         const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
+        // const s = io(socketUrl, {
+        //   withCredentials: true,
+        //   transports: ["polling", "websocket"],
+        // });
+
         const s = io(socketUrl, {
           withCredentials: true,
-          transports: ["polling", "websocket"],
+          transports: ["websocket", "polling"],
+          reconnectionAttempts: 5,
+          timeout: 10000,
         });
 
         setSocket(s);

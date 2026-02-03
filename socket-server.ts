@@ -73,7 +73,9 @@ io.on("connection", (socket) => {
     try {
       console.log("📩 Received init from:", username); // Ye Render logs mein check karna
       if (!username) return;
+
       onlineUsers.set(username, socket.id);
+
       const [users, chats] = await Promise.all([
         User.find({}, "username").lean(),
         Message.find({
@@ -83,7 +85,13 @@ io.on("connection", (socket) => {
 
       console.log(`📊 Found ${users.length} users and ${chats.length} chats for ${username}`);
 
-      socket.emit("init", {
+      // socket.emit("init", {
+      //   users: users.map((u: any) => u.username),
+      //   chats,
+      //   onlineList: Array.from(onlineUsers.keys()),
+      // });
+
+       io.to(socket.id).emit("init", {
         users: users.map((u: any) => u.username),
         chats,
         onlineList: Array.from(onlineUsers.keys()),
