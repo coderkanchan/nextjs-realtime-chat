@@ -8,7 +8,9 @@ import { User } from "./models/User";
 const MONGO_URI = process.env.MONGO_URI!;
 //const FRONTEND_URL = process.env.FRONTEND_URL || "https://nextjs-realtime-chat-murex-one.vercel.app";
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
+
+const allowedOrigins = FRONTEND_URL.split(",")
 
 // const allowedOrigins = [
 //   "https://nextjs-realtime-chat-murex-one.vercel.app",
@@ -32,7 +34,7 @@ mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
 
 const io = new Server({
   cors: {
-    origin: [FRONTEND_URL, "http://localhost:3000"],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true
   },
