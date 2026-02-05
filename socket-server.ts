@@ -72,39 +72,70 @@ io.on("connection", (socket) => {
   //   });
   // });
 
+  // socket.on("init", async ({ username }) => {
+  //   try {
+  //     console.log("📩 Received init from:", username);
+  //     if (!username) return;
+
+  //     onlineUsers.set(username, socket.id);
+
+  //     const [users, chats] = await Promise.all([
+  //       User.find({}, "username").lean(),
+  //       Message.find({
+  //         $or: [{ senderId: username }, { receiverId: username }],
+  //       }).lean(),
+  //     ]);
+
+  //     console.log(`📊 Found ${users.length} users and ${chats.length} chats for ${username}`);
+
+  //     // socket.emit("init", {
+  //     //   users: users.map((u: any) => u.username),
+  //     //   chats,
+  //     //   onlineList: Array.from(onlineUsers.keys()),
+  //     // });
+
+  //     io.to(socket.id).emit("init", {
+  //       users: users.map((u: any) => u.username),
+  //       chats,
+  //       onlineList: Array.from(onlineUsers.keys()),
+  //     });
+
+  //     console.log("✅ Data emitted back to client");
+  //   } catch (err) {
+  //     console.error("❌ Error in init event:", err);
+  //   }
+  // });
+
+
   socket.on("init", async ({ username }) => {
     try {
-      console.log("📩 Received init from:", username);
+      console.log("📩 Requesting data for:", username);
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
 
-      const [users, chats] = await Promise.all([
-        User.find({}, "username").lean(),
-        Message.find({
-          $or: [{ senderId: username }, { receiverId: username }],
-        }).lean(),
-      ]);
+      // Pehle bina MongoDB ke test karte hain ki kya socket bhej raha hai
+      const users = await User.find({}, "username").lean();
+      const chats = await Message.find({
+        $or: [{ senderId: username }, { receiverId: username }],
+      }).lean();
 
-      console.log(`📊 Found ${users.length} users and ${chats.length} chats for ${username}`);
-
-      // socket.emit("init", {
-      //   users: users.map((u: any) => u.username),
-      //   chats,
-      //   onlineList: Array.from(onlineUsers.keys()),
-      // });
-
-      io.to(socket.id).emit("init", {
+      // Sabse important line - io.to(socket.id) ki jagah direct socket.emit use karo
+      socket.emit("init", {
         users: users.map((u: any) => u.username),
-        chats,
+        chats: chats,
         onlineList: Array.from(onlineUsers.keys()),
       });
 
-      console.log("✅ Data emitted back to client");
+      // Sabko update karo ki naya banda online aaya hai
+      io.emit("update-online-users", Array.from(onlineUsers.keys()));
+
+      console.log("✅ Data sent to client successfully");
     } catch (err) {
-      console.error("❌ Error in init event:", err);
+      console.error("❌ MongoDB/Socket Error:", err);
     }
   });
+
 
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
