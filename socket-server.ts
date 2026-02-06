@@ -216,24 +216,33 @@ const MONGO_URI = process.env.MONGO_URI!;
 const FRONTEND_URL = process.env.FRONTEND_URL || "";
 const PORT = Number(process.env.PORT) || 10000;
 
-const allowedOrigins = FRONTEND_URL ? FRONTEND_URL.split(",") : ["http://localhost:3000"];
+// const allowedOrigins = FRONTEND_URL ? FRONTEND_URL.split(",") : ["http://localhost:3000"];
 
 mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
 
 // Explicitly HTTP Server create karein Render ke liye
 const httpServer = createServer();
 
+// const io = new Server(httpServer, {
+//   cors: {
+//     origin: (origin, callback) => {
+//       // Agar origin allowed list mein hai ya empty (local dev), toh allow karein
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         console.log("❌ Blocked by CORS:", origin);
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST"],
+//     credentials: true
+//   },
+//   transports: ["websocket", "polling"]
+// });
+
 const io = new Server(httpServer, {
   cors: {
-    origin: (origin, callback) => {
-      // Agar origin allowed list mein hai ya empty (local dev), toh allow karein
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("❌ Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(",") : ["http://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true
   },
@@ -332,6 +341,10 @@ io.on("connection", (socket) => {
 });
 
 // YAHAN SABSE BADA CHANGE: io.listen ki jagah httpServer.listen
-httpServer.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Final Socket server running on port ${PORT}`);
+// httpServer.listen(PORT, "0.0.0.0", () => {
+//   console.log(`🚀 Final Socket server running on port ${PORT}`);
+// });
+
+httpServer.listen(Number(PORT), "0.0.0.0", () => {
+  console.log(`🚀 SERVER STARTED ON PORT: ${PORT}`);
 });
