@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
+    "start": "node dist/socket-server.js",
     "socket": "ts-node --project tsconfig.server.json socket-server.ts"
   },
   "dependencies": {
