@@ -14,39 +14,6 @@ export default function ChatPage() {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const user = localStorage.getItem("username");
-  //   if (!user) {
-  //     router.push("/login");
-  //     return;
-  //   }
-  //   setCurrentUser(user);
-
-  //   const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
-  //   const s = io(socketUrl, {
-  //     withCredentials: true,
-  //     transports: ["polling", "websocket"],
-  //   });
-
-  //   setSocket(s);
-
-  //   s.emit("init", { username: user });
-
-  //   s.on("init", ({ users, chats, onlineList }: any) => {
-  //     setAllUsers(users);
-  //     setChatList(chats);
-  //     setOnlineUsers(onlineList);
-  //   });
-
-  //   s.on("update-online-users", (list: string[]) => {
-  //     setOnlineUsers(list);
-  //   });
-
-  //   return () => {
-  //     s.disconnect();
-  //   };
-  // }, [router]);
-
   useEffect(() => {
     const initChat = async () => {
       console.log("Fetching user...");
@@ -65,20 +32,7 @@ export default function ChatPage() {
         setCurrentUser(username);
 
         const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
-        // const s = io(socketUrl, {
-        //   withCredentials: true,
-        //   transports: ["polling", "websocket"],
-        // });
-
-        // const s = io(socketUrl, {
-        //   withCredentials: true,
-        //   transports: ["websocket", "polling"],
-        //   upgrade: false,
-        //   secure: true
-        //   //reconnectionAttempts: 5,
-        //   //timeout: 10000,
-        // });
-
+       
         const s = io(socketUrl, {
           withCredentials: true,
           transports: ["websocket", "polling"], 
@@ -86,13 +40,6 @@ export default function ChatPage() {
           reconnectionAttempts: 10, 
         });
         setSocket(s);
-
-        // s.on("connect", () => {
-        //   console.log("✅ Socket Connected with ID:", s.id);
-        //   s.emit("init", { username });
-        // });
-
-        // s.emit("init", { username });
 
         s.on("connect", () => {
           console.log("✅ Socket Connected with ID:", s.id);
@@ -145,8 +92,6 @@ export default function ChatPage() {
       </div>
     );
   }
-
-  // if (!currentUser || !socket) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse">Loading Messenger...</div>;
 
   return (
     <div className="flex h-[700px] bg-gray-100 p-4">
