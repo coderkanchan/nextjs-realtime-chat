@@ -318,5 +318,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(Number(PORT), "0.0.0.0", () => {
-  console.log(`🚀 SERVER STARTED ON PORT: ${PORT}`);
+  console.log(`🚀 SERVER STARTED ON THIS PORT: ${PORT}`);
 });
