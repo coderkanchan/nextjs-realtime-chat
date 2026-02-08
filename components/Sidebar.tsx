@@ -144,6 +144,42 @@ export default function Sidebar({
               </div>
             );
           })}
+
+          {recentChats.map((chat: any) => {
+            const partner = chat.senderId === currentUser ? chat.receiverId : chat.senderId;
+
+            // 1. Safe way to find partner data from allUsers
+            const partnerObj = allUsers.find(u => u && (typeof u === 'string' ? u : u.username) === partner);
+            const isOnline = onlineUsers.includes(partner);
+
+            // 2. Format the message time (Created at)
+            const messageTime = chat.createdAt
+              ? new Date(chat.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : "";
+
+            return (
+              <div key={partner} onClick={() => setOtherUser(partner)} className={`p-3 rounded-2xl cursor-pointer mb-2 border-2 transition-all ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`}>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-gray-700 flex items-center gap-1">
+                    {partner}
+                    {/* 3. Dot Color Logic: Green if Online, Gray if Offline */}
+                    <span className={`${isOnline ? "text-green-500" : "text-gray-400"} text-[14px]`}>●</span>
+                  </span>
+                  {unreadCounts[partner] > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full">{unreadCounts[partner]}</span>}
+                </div>
+
+                <div className="flex justify-between items-center mt-1">
+                  <p className="text-[11px] truncate text-gray-400 w-2/3">
+                    {isImageUrl(chat) ? "📷 Photo" : chat.message}
+                  </p>
+                  {/* 4. Display Message Time instead of Online/Offline status */}
+                  <p className="text-[9px] text-gray-400 font-medium italic">
+                    {messageTime}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="mt-8">
