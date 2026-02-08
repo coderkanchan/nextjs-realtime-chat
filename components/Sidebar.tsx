@@ -91,8 +91,17 @@ export default function Sidebar({
     return { recentChats: sortedRecent, discoverUsers: discover, unreadCounts: counts };
   }, [localChatList, allUsers, currentUser, searchTerm, otherUser]);
 
-  const formatLastSeen = (date: string) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // const formatLastSeen = (date: string) => {
+  //   return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // };
+
+  const formatLastSeen = (date: any) => {
+    if (!date) return "Offline";
+    return new Date(date).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toLowerCase();
   };
 
   return (
@@ -153,8 +162,16 @@ export default function Sidebar({
             const isOnline = onlineUsers.includes(partner);
 
             // 2. Format the message time (Created at)
+            // const messageTime = chat.createdAt
+            //   ? new Date(chat.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            //   : "";
+
             const messageTime = chat.createdAt
-              ? new Date(chat.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              ? new Date(chat.createdAt).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }).toLowerCase()
               : "";
 
             return (
