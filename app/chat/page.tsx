@@ -31,7 +31,7 @@ export default function ChatPage() {
         const username = data.user.username;
         setCurrentUser(username);
 
-        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://live-chat-socket-server.onrender.com";
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://nextjs-realtime-chat.onrender.com";
        
         const s = io(socketUrl, {
           withCredentials: true,

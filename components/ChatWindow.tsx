@@ -92,7 +92,7 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
           <div className="font-bold text-gray-800">{otherUser}</div>
 
           <div className={`text-[10px]  font-bold uppercase ${currentOnline ? "text-green-500" : "text-gray-400"}`}>
-            {isTyping ? "Typing..." : currentOnline ? "Online" : "Ofline"}
+            {isTyping ? "Typing..." : currentOnline ? "Online" : "Offline"}
           </div>
         </div>
       </header>

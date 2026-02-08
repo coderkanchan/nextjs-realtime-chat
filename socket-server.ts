@@ -206,7 +206,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Server } from "socket.io";
-import { createServer } from "http"; 
+import { createServer } from "http";
 import mongoose from "mongoose";
 import { Message } from "./models/Message";
 import { User } from "./models/User";
@@ -241,7 +241,7 @@ io.on("connection", (socket) => {
       onlineUsers.set(username, socket.id);
 
       const [users, chats] = await Promise.all([
-        User.find({}, "username").lean(),
+        User.find({}, "username, lastSeen").lean(),
         Message.find({
           $or: [{ senderId: username }, { receiverId: username }],
         }).lean()
@@ -260,16 +260,31 @@ io.on("connection", (socket) => {
     }
   });
 
-
-
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
     console.log(`User joined room: ${roomId}`);
   });
 
+  // socket.on("send-message", async (data) => {
+  //   try {
+  //     const msg = await Message.create({ ...data, readStatus: false });
+  //     io.to(data.roomId).emit("receive-message", msg);
+  //   } catch (err) {
+  //     console.error("Error sending message:", err);
+  //   }
+  // });
+
   socket.on("send-message", async (data) => {
     try {
-      const msg = await Message.create({ ...data, readStatus: false });
+      // Check agar receiver online hai
+      const isReceiverOnline = onlineUsers.has(data.receiverId);
+
+      const msg = await Message.create({
+        ...data,
+        readStatus: false,
+        deliveryStatus: isReceiverOnline ? 'delivered' : 'sent' // Naya field
+      });
+
       io.to(data.roomId).emit("receive-message", msg);
     } catch (err) {
       console.error("Error sending message:", err);
@@ -297,7 +312,12 @@ io.on("connection", (socket) => {
     await Message.findByIdAndUpdate(messageId, { $addToSet: { deletedFor: username } });
   });
 
+  // socket.on("typing", ({ roomId, senderId }) => {
+  //   socket.to(roomId).emit("display-typing", { senderId });
+  // });
+
   socket.on("typing", ({ roomId, senderId }) => {
+    console.log(`User ${senderId} is typing in ${roomId}`);
     socket.to(roomId).emit("display-typing", { senderId });
   });
 
@@ -305,10 +325,12 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("hide-typing", { senderId });
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     for (const [user, id] of onlineUsers) {
       if (id === socket.id) {
         onlineUsers.delete(user);
+        // Database mein last seen update karein
+        await User.findOneAndUpdate({ username: user }, { isOnline: false, lastSeen: new Date() });
         break;
       }
     }

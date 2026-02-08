@@ -8,8 +8,9 @@ const MessageSchema = new mongoose.Schema({
   messageType: { type: String, enum: ['text', 'image'], default: 'text' },
   caption: { type: String, default: "" },
   readStatus: { type: Boolean, default: false },
-  isDeleted: { type: Boolean, default: false }, // For Delete for Everyone
-  deletedFor: [{ type: String }] // For Delete for Me (Stores usernames)
+  isDeleted: { type: Boolean, default: false }, 
+  deliveryStatus: { type: String, enum: ['sent', 'delivered'], default: 'sent' },
+  deletedFor: [{ type: String }] 
 }, { timestamps: true });
 
 export const Message = mongoose.models.Message || mongoose.model("Message", MessageSchema);

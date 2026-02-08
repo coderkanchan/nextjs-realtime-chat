@@ -65,6 +65,10 @@ export default function Sidebar({
     return { recentChats: sortedRecent, discoverUsers: discover, unreadCounts: counts };
   }, [localChatList, allUsers, currentUser, searchTerm, otherUser]);
 
+  const formatLastSeen = (date: string) => {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   return (
     <div className="w-1/4 bg-blue-50 border-r flex flex-col h-full p-4 shadow-inner">
       <div className="mb-4 flex justify-between items-start">
@@ -102,11 +106,10 @@ export default function Sidebar({
           })}
         </div>
 
-      
         <div className="mt-8">
           <h4 className="text-[11px] font-extrabold text-gray-400 uppercase mb-3">Discover People</h4>
           <div className="space-y-2">
-            {discoverUsers.map((user: string) => (
+            {discoverUsers.map((user: any) => (
               <div
                 key={user}
                 onClick={() => setOtherUser(user)}
@@ -117,16 +120,26 @@ export default function Sidebar({
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-bold text-gray-700">{user}</div>
-                  <div className="text-[10px] text-gray-400 uppercase font-bold">
+                  {/* <div className="text-[10px] text-gray-400 uppercase font-bold">
                     {onlineUsers.includes(user) ? "Online" : "Offline"}
+                  </div> */}
+                  <div key={user.username} >
+                    <div className="text-[10px] text-gray-400 uppercase font-bold">
+                      {onlineUsers.includes(user.username) ? (
+                        <span className="text-green-500">Online</span>
+                      ) : (
+                        `Last seen: ${new Date(user.lastSeen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                      )}
+                    </div>
                   </div>
                 </div>
+
               </div>
             ))}
             {discoverUsers.length === 0 && <p className="text-[10px] text-gray-400 italic">No new users found</p>}
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

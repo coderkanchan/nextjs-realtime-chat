@@ -112,9 +112,18 @@ export default function MessageItem({
             )}
 
             {!m.isDeleted && (
-              <div className={`flex justify-end items-center gap-1 px-3 pb-1.5 text-[9px] font-bold ${isImage && !m.caption ? "absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full text-white" : ""}`}>
-                <span>{formatTime(m.createdAt || new Date())}</span>
-                {isMe && <span className="ml-0.5">{m.readStatus ? "✓✓" : "✓"}</span>}
+              // <div className={`flex justify-end items-center gap-1 px-3 pb-1.5 text-[9px] font-bold ${isImage && !m.caption ? "absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-full text-white" : ""}`}>
+              //   <span>{formatTime(m.createdAt || new Date())}</span>
+              //   {isMe && <span className="ml-0.5">{m.readStatus ? "✓✓" : "✓"}</span>}
+              // </div>
+
+              <div className="flex justify-end items-center gap-1">
+                <span>{formatTime(m.createdAt)}</span>
+                {isMe && (
+                  <span className={`text-[11px] font-bold ${m.readStatus ? "text-blue-400" : "text-gray-300"}`}>
+                    {m.readStatus ? "✓✓" : m.deliveryStatus === 'delivered' ? "✓✓" : "✓"}
+                  </span>
+                )}
               </div>
             )}
           </div>
