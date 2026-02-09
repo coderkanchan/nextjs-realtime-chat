@@ -19,7 +19,14 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
       socket.emit("mark-as-read", { roomId, username: currentUser });
     };
     fetchHistory();
+
     socket.emit("join-room", roomId);
+
+    socket.on("messages-read-update", ({ roomId: rId }: any) => {
+      if (rId === roomId) {
+        setMessages(prev => prev.map(m => ({ ...m, readStatus: true })));
+      }
+    });
 
     socket.on("receive-message", (msg: any) => {
       if (msg.roomId === roomId) {
@@ -44,6 +51,7 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
 
     return () => {
       socket.off("receive-message");
+      socket.off("messages-read-update");
       socket.off("message-deleted-everyone");
       socket.off("display-typing");
       socket.off("hide-typing");

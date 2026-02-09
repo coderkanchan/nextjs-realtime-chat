@@ -32,12 +32,12 @@ export default function ChatPage() {
         setCurrentUser(username);
 
         const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "https://nextjs-realtime-chat.onrender.com";
-       
+
         const s = io(socketUrl, {
           withCredentials: true,
-          transports: ["websocket", "polling"], 
+          transports: ["websocket", "polling"],
           reconnection: true,
-          reconnectionAttempts: 10, 
+          reconnectionAttempts: 10,
         });
         setSocket(s);
 
@@ -45,6 +45,30 @@ export default function ChatPage() {
           console.log("✅ Socket Connected with ID:", s.id);
           console.log("📤 Emitting init for user:", username);
           s.emit("init", { username });
+        });
+
+        // Is function ko initChat ke andar s.on("connect", ...) ke baad add karein
+        s.on("receive-message", (msg: any) => {
+          // Update chat list for Sidebar real-time
+          setChatList((prev) => {
+            const filtered = prev.filter(m => {
+              const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
+              const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
+              return p1 !== p2;
+            });
+            return [msg, ...filtered];
+          });
+
+          // Sound play logic: Agar message kisi aur ne bheja hai toh sound bajao
+          if (msg.senderId !== currentUser) {
+            const audio = new Audio("/notify.mp3"); // Path to your sound file
+            audio.play().catch(e => console.log("Sound error:", e));
+          }
+        });
+
+        // Listener for Ticks update
+        s.on("messages-read", ({ roomId }: { roomId: string }) => {
+          setChatList(prev => prev.map(m => m.roomId === roomId ? { ...m, readStatus: true } : m));
         });
 
         s.on("init", ({ users, chats, onlineList }: any) => {
@@ -70,6 +94,33 @@ export default function ChatPage() {
       if (socket) socket.disconnect();
     };
   }, [router]);
+
+  useEffect(() => {
+    if (!socket || !currentUser) return;
+
+    const handleMsg = (msg: any) => {
+      console.log("Naya Message Aaya:", msg);
+      setChatList((prev) => {
+        const filtered = prev.filter(m => {
+          const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
+          const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
+          return p1 !== p2;
+        });
+        return [msg, ...filtered];
+      });
+
+      if (msg.senderId !== currentUser) {
+        const audio = new Audio("/notify.mp3");
+        audio.play().catch(e => console.log("Audio error:", e));
+      }
+    };
+
+    socket.on("receive-message", handleMsg);
+
+    return () => {
+      socket.off("receive-message", handleMsg);
+    };
+  }, [socket, currentUser, chatList]);
 
   const handleSelectUser = (user: string) => {
     setOtherUser(user);

@@ -33,17 +33,17 @@ io.on("connection", (socket) => {
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
-      
+
       await User.findOneAndUpdate({ username }, { isOnline: true });
 
       const [users, chats] = await Promise.all([
         User.find({}, "username lastSeen isOnline").lean(),
         Message.find({
           $or: [{ senderId: username }, { receiverId: username }],
-        }).sort({ createdAt: -1 }).lean(), 
+        }).sort({ createdAt: -1 }).lean(),
       ]);
 
-      
+
       const safeUsers = users.filter(u => u && u.username);
 
       socket.emit("init", {
@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
         onlineList: Array.from(onlineUsers.keys()),
       });
 
-     
+
       io.emit("update-discover", safeUsers);
       io.emit("update-online-users", Array.from(onlineUsers.keys()));
 
@@ -67,17 +67,32 @@ io.on("connection", (socket) => {
   });
 
 
+  // socket.on("send-message", async (data) => {
+  //   try {
+  //     const isReceiverOnline = onlineUsers.has(data.receiverId);
+
+  //     const msg = await Message.create({
+  //       ...data,
+  //       readStatus: false,
+  //       deliveryStatus: isReceiverOnline ? 'delivered' : 'sent'
+  //     });
+
+  //     io.to(data.roomId).emit("receive-message", msg);
+  //   } catch (err) {
+  //     console.error("Error sending message:", err);
+  //   }
+  // });
+
   socket.on("send-message", async (data) => {
     try {
-      const isReceiverOnline = onlineUsers.has(data.receiverId);
-
-      const msg = await Message.create({
-        ...data,
-        readStatus: false,
-        deliveryStatus: isReceiverOnline ? 'delivered' : 'sent' 
-      });
+      const msg = await Message.create({ ...data });
 
       io.to(data.roomId).emit("receive-message", msg);
+
+      const receiverSocketId = onlineUsers.get(data.receiverId);
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("receive-message", msg);
+      }
     } catch (err) {
       console.error("Error sending message:", err);
     }
@@ -89,6 +104,7 @@ io.on("connection", (socket) => {
         { roomId, receiverId: username, readStatus: false },
         { $set: { readStatus: true } }
       );
+      io.to(roomId).emit("messages-read-update", { roomId });
     } catch (err) {
       console.error("Error marking as read:", err);
     }

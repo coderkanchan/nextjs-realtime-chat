@@ -20,21 +20,21 @@ export default function Sidebar({
 
   useEffect(() => { setLocalChatList(chatList); }, [chatList]);
 
-  useEffect(() => {
-    if (!socket) return;
-    const handleNewMessageSidebar = (msg: any) => {
-      setLocalChatList((prev) => {
-        const filtered = prev.filter(m => {
-          const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
-          const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
-          return p1 !== p2;
-        });
-        return [msg, ...filtered];
-      });
-    };
-    socket.on("receive-message", handleNewMessageSidebar);
-    return () => { socket.off("receive-message", handleNewMessageSidebar); };
-  }, [socket, currentUser]);
+  // useEffect(() => {
+  //   if (!socket) return;
+  //   const handleNewMessageSidebar = (msg: any) => {
+  //     setLocalChatList((prev) => {
+  //       const filtered = prev.filter(m => {
+  //         const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
+  //         const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
+  //         return p1 !== p2;
+  //       });
+  //       return [msg, ...filtered];
+  //     });
+  //   };
+  //   socket.on("receive-message", handleNewMessageSidebar);
+  //   return () => { socket.off("receive-message", handleNewMessageSidebar); };
+  // }, [socket, currentUser]);
 
   const isImageUrl = (msg: any) => {
     return msg.messageType === 'image' || (msg.message && (msg.message.includes("cloudinary.com") || msg.message.match(/\.(jpeg|jpg|gif|png|webp)/i)));

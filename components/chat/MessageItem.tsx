@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { BiCheckDouble } from "react-icons/bi";
+import { FaCheck } from "react-icons/fa6";
 
 export default function MessageItem({
   m,
@@ -74,7 +76,7 @@ export default function MessageItem({
             </div>
           )}
 
-          <div className={`relative shadow-md overflow-hidden transition-all duration-200 ${isMe ? "bg-blue-600 text-white rounded-2xl rounded-tr-none" : "bg-white text-gray-800 border rounded-2xl rounded-tl-none"}`}>
+          <div className={`relative shadow-md overflow-hidden transition-all duration-200 p-1 ${isMe ? "bg-[#06389c] text-white rounded-2xl rounded-tr-none" : "bg-gray-300 text-gray-800 border border-gray-400 rounded-2xl rounded-tl-none"}`}>
             {m.isDeleted ? (
               <div className="px-4 py-2 text-[12px] italic flex items-center gap-2 opacity-70">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636" /></svg>
@@ -104,7 +106,7 @@ export default function MessageItem({
                     )}
                   </div>
                 ) : (
-                  <div className="px-4 py-2 text-[13.5px] wrap-break-words whitespace-pre-wrap font-medium">
+                  <div className="px-4 py-2 text-lg wrap-break-words whitespace-pre-wrap font-medium">
                     {m.message}
                   </div>
                 )}
@@ -112,11 +114,11 @@ export default function MessageItem({
             )}
 
             {!m.isDeleted && (
-              <div className="flex justify-end items-center gap-1">
-                <span>{formatTime(m.createdAt)}</span>
+              <div className="flex justify-end items-center gap-3 px-2">
+                <span className={`text-xs ${isMe ? " text-gray-300" : "text-gray-400"}`}>{formatTime(m.createdAt)}</span>
                 {isMe && (
-                  <span className={`text-[11px] font-bold ${m.readStatus ? "text-blue-400" : "text-gray-300"}`}>
-                    {m.readStatus ? "✓✓" : m.deliveryStatus === 'delivered' ? "✓✓" : "✓"}
+                  <span className={`text-2xl font-bold ${m.readStatus ? "text-blue-400" : " text-gray-100"}`}>
+                    {m.readStatus ? <BiCheckDouble /> : m.deliveryStatus === 'delivered' ? <BiCheckDouble /> : <FaCheck />}
                   </span>
                 )}
               </div>
