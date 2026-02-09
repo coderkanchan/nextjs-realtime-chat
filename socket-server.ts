@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
       const msg = await Message.create({
         ...data,
         readStatus: false,
-        deliveryStatus: isReceiverOnline ? 'delivered' : 'sent' // Naya field
+        deliveryStatus: isReceiverOnline ? 'delivered' : 'sent' 
       });
 
       io.to(data.roomId).emit("receive-message", msg);
