@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import dotenv from "dotenv";
 dotenv.config();
 import { Server } from "socket.io";
@@ -34,57 +28,22 @@ const onlineUsers = new Map<string, string>();
 io.on("connection", (socket) => {
   console.log("🟢 New Connection Attempt:", socket.id);
 
-  // socket.on("init", async ({ username }) => {
-  //   try {
-  //     console.log("📩 Requesting data for:", username);
-  //     if (!username) return;
-
-  //     onlineUsers.set(username, socket.id);
-
-  //     // const [users, chats] = await Promise.all([
-  //     //   User.find({}, "username ,lastSeen ,isOnline").lean();
-  //     // Message.find({
-  //     //   $or: [{ senderId: username }, { receiverId: username }],
-  //     // }).lean()
-  //     // ]);
-
-  //     const [users, chats] = await Promise.all([
-  //       User.find({}, "username lastSeen isOnline").lean(),
-  //       Message.find({
-  //         $or: [{ senderId: username }, { receiverId: username }],
-  //       }).lean(),
-  //     ]);
-
-  //     socket.emit("init", {
-  //       users: users.filter(u => u && u.username),
-  //       chats: chats,
-  //       onlineList: Array.from(onlineUsers.keys()),
-  //     });
-
-  //     io.emit("update-online-users", Array.from(onlineUsers.keys()));
-  //     console.log(`✅ Data sent to ${username}. Users: ${users.length}, Chats: ${chats.length}`);
-  //   } catch (err) {
-  //     console.error("❌ MongoDB/Socket Error:", err);
-  //   }
-  // });
-
-  // socket-server.ts ke andar init event:
   socket.on("init", async ({ username }) => {
     try {
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
-      // DB mein status update karein
+      
       await User.findOneAndUpdate({ username }, { isOnline: true });
 
       const [users, chats] = await Promise.all([
         User.find({}, "username lastSeen isOnline").lean(),
         Message.find({
           $or: [{ senderId: username }, { receiverId: username }],
-        }).sort({ createdAt: -1 }).lean(), // Sorting zaroori hai
+        }).sort({ createdAt: -1 }).lean(), 
       ]);
 
-      // Sabhi ko updated user list bhejein
+      
       const safeUsers = users.filter(u => u && u.username);
 
       socket.emit("init", {
@@ -93,7 +52,7 @@ io.on("connection", (socket) => {
         onlineList: Array.from(onlineUsers.keys()),
       });
 
-      // Yeh line zaroori hai taaki dusre users ka discover refresh ho
+     
       io.emit("update-discover", safeUsers);
       io.emit("update-online-users", Array.from(onlineUsers.keys()));
 
@@ -107,18 +66,9 @@ io.on("connection", (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
 
-  // socket.on("send-message", async (data) => {
-  //   try {
-  //     const msg = await Message.create({ ...data, readStatus: false });
-  //     io.to(data.roomId).emit("receive-message", msg);
-  //   } catch (err) {
-  //     console.error("Error sending message:", err);
-  //   }
-  // });
 
   socket.on("send-message", async (data) => {
     try {
-      // Check agar receiver online hai
       const isReceiverOnline = onlineUsers.has(data.receiverId);
 
       const msg = await Message.create({
@@ -154,10 +104,6 @@ io.on("connection", (socket) => {
     await Message.findByIdAndUpdate(messageId, { $addToSet: { deletedFor: username } });
   });
 
-  // socket.on("typing", ({ roomId, senderId }) => {
-  //   socket.to(roomId).emit("display-typing", { senderId });
-  // });
-
   socket.on("typing", ({ roomId, senderId }) => {
     console.log(`User ${senderId} is typing in ${roomId}`);
     socket.to(roomId).emit("display-typing", { senderId });
@@ -171,7 +117,6 @@ io.on("connection", (socket) => {
     for (const [user, id] of onlineUsers) {
       if (id === socket.id) {
         onlineUsers.delete(user);
-        // Database mein last seen update karein
         await User.findOneAndUpdate({ username: user }, { isOnline: false, lastSeen: new Date() });
         break;
       }
