@@ -452,7 +452,12 @@ export default function Sidebar({
               : "";
 
             return (
-              <div key={partner} onClick={() => setOtherUser(partner)} className={`p-3 rounded-2xl cursor-pointer mb-2 border-2 transition-all ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`}>
+              <div
+                key={partner} onClick={() =>
+                  setOtherUser(partner)}
+                className={`px-2 py-1.5 rounded-2xl cursor-pointer mb-2 border-2 transition-all 
+              ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`
+                }>
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-gray-700 flex items-center gap-1">
                     {partner}
@@ -464,7 +469,7 @@ export default function Sidebar({
                   <p className="text-[11px] truncate text-gray-400 w-2/3">
                     {isImageUrl(chat) ? "📷 Photo" : chat.message}
                   </p>
-                  <p className="text-[9px] text-gray-400 font-medium italic">
+                  <p className="text-[9px] text-gray-400 font-medium">
                     {messageTime}
                   </p>
                 </div>

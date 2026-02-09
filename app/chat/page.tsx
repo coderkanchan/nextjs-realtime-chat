@@ -111,6 +111,7 @@ export default function ChatPage() {
           otherUser={otherUser}
           socket={socket}
           onlineUsers={onlineUsers}
+          allUsers={allUsers}
         />
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import MessageItem from "./chat/MessageItem";
 import MessageInput from "./chat/MessageInput";
 
-export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers }: any) {
+export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers, allUsers }: any) {
   const [messages, setMessages] = useState<any[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -63,7 +63,7 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
   const deleteForMe = (id: string) => {
     if (!socket) return;
     socket.emit("delete-for-me", { messageId: id, username: currentUser });
-   
+
     setMessages(prev => prev.map(m =>
       m._id === id ? { ...m, deletedFor: [...(m.deletedFor || []), currentUser] } : m
     ));
@@ -77,9 +77,23 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
     ));
   };
 
-  const currentOnline = onlineUsers.includes(otherUser);
-
   if (!otherUser) return <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-400 font-bold">Select a user to chat</div>;
+
+  const targetUser = allUsers.find((u: any) =>
+    (typeof u === 'string' ? u : u.username) === otherUser
+  );
+
+  const isOnline = onlineUsers.includes(otherUser);
+  const lastSeenTime = targetUser?.lastSeen;
+
+  const formatLastSeen = (date: any) => {
+    if (!date) return "Offline";
+    return new Date(date).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toLowerCase();
+  };
 
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
@@ -91,9 +105,19 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
 
           <div className="font-bold text-gray-800">{otherUser}</div>
 
-          <div className={`text-[10px]  font-bold uppercase ${currentOnline ? "text-green-500" : "text-gray-400"}`}>
-            {isTyping ? "Typing..." : currentOnline ? "Online" : "Offline"}
-          </div>
+          <p className="text-[11px] font-medium">
+            {isOnline ? (
+              isTyping ? (
+                <span className="text-blue-500 animate-pulse italic">typing...</span>
+              ) : (
+                <span className="text-green-500">Online</span>
+              )
+            ) : (
+              <span className="text-gray-400">
+                {lastSeenTime ? `last seen today at ${formatLastSeen(lastSeenTime)}` : "Offline"}
+              </span>
+            )}
+          </p>
         </div>
       </header>
       <div className="flex-1 overflow-y-auto p-4 space-y-1 bg-[#f0f2f5]">
