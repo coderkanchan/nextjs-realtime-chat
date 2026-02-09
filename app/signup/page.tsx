@@ -50,8 +50,6 @@ export default function SignupPage() {
     }
 
     toast.success("Account created successfully", { duration: 800 }); 
-    //localStorage.setItem("username", form.username);
-
     setTimeout(() => {
       router.push("/welcome");
     }, 800);

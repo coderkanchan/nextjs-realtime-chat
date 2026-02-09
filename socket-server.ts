@@ -89,7 +89,6 @@ io.on("connection", (socket) => {
         { roomId, receiverId: username, readStatus: false },
         { $set: { readStatus: true } }
       );
-      // Optional: socket.to(roomId).emit("messages-read", { roomId });
     } catch (err) {
       console.error("Error marking as read:", err);
     }
