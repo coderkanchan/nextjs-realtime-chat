@@ -79,12 +79,12 @@
 
 //   //     onlineUsers.set(username, socket.id);
 
-//   //     const [users, chats] = await Promise.all([
-//   //       User.find({}, "username").lean(),
-//   //       Message.find({
-//   //         $or: [{ senderId: username }, { receiverId: username }],
-//   //       }).lean(),
-//   //     ]);
+// const [users, chats] = await Promise.all([
+//   User.find({}, "username").lean(),
+//   Message.find({
+//     $or: [{ senderId: username }, { receiverId: username }],
+//   }).lean(),
+// ]);
 
 //   //     console.log(`📊 Found ${users.length} users and ${chats.length} chats for ${username}`);
 
@@ -233,28 +233,69 @@ const onlineUsers = new Map<string, string>();
 io.on("connection", (socket) => {
   console.log("🟢 New Connection Attempt:", socket.id);
 
+  // socket.on("init", async ({ username }) => {
+  //   try {
+  //     console.log("📩 Requesting data for:", username);
+  //     if (!username) return;
+
+  //     onlineUsers.set(username, socket.id);
+
+  //     // const [users, chats] = await Promise.all([
+  //     //   User.find({}, "username ,lastSeen ,isOnline").lean();
+  //     // Message.find({
+  //     //   $or: [{ senderId: username }, { receiverId: username }],
+  //     // }).lean()
+  //     // ]);
+
+  //     const [users, chats] = await Promise.all([
+  //       User.find({}, "username lastSeen isOnline").lean(),
+  //       Message.find({
+  //         $or: [{ senderId: username }, { receiverId: username }],
+  //       }).lean(),
+  //     ]);
+
+  //     socket.emit("init", {
+  //       users: users.filter(u => u && u.username),
+  //       chats: chats,
+  //       onlineList: Array.from(onlineUsers.keys()),
+  //     });
+
+  //     io.emit("update-online-users", Array.from(onlineUsers.keys()));
+  //     console.log(`✅ Data sent to ${username}. Users: ${users.length}, Chats: ${chats.length}`);
+  //   } catch (err) {
+  //     console.error("❌ MongoDB/Socket Error:", err);
+  //   }
+  // });
+
+  // socket-server.ts ke andar init event:
   socket.on("init", async ({ username }) => {
     try {
-      console.log("📩 Requesting data for:", username);
       if (!username) return;
 
       onlineUsers.set(username, socket.id);
+      // DB mein status update karein
+      await User.findOneAndUpdate({ username }, { isOnline: true });
 
       const [users, chats] = await Promise.all([
-        User.find({}, "username, lastSeen").lean(),
+        User.find({}, "username lastSeen isOnline").lean(),
         Message.find({
           $or: [{ senderId: username }, { receiverId: username }],
-        }).lean()
+        }).sort({ createdAt: -1 }).lean(), // Sorting zaroori hai
       ]);
 
+      // Sabhi ko updated user list bhejein
+      const safeUsers = users.filter(u => u && u.username);
+
       socket.emit("init", {
-        users: users.map((u: any) => u.username),
+        users: safeUsers,
         chats: chats,
         onlineList: Array.from(onlineUsers.keys()),
       });
 
+      // Yeh line zaroori hai taaki dusre users ka discover refresh ho
+      io.emit("update-discover", safeUsers);
       io.emit("update-online-users", Array.from(onlineUsers.keys()));
-      console.log(`✅ Data sent to ${username}. Users: ${users.length}, Chats: ${chats.length}`);
+
     } catch (err) {
       console.error("❌ MongoDB/Socket Error:", err);
     }
