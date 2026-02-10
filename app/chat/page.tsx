@@ -4,6 +4,7 @@ import { io, Socket } from "socket.io-client";
 import Sidebar from "@/components/Sidebar";
 import ChatWindow from "@/components/ChatWindow";
 import { useRouter } from "next/navigation";
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function ChatPage() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -47,29 +48,9 @@ export default function ChatPage() {
           s.emit("init", { username });
         });
 
-        // Is function ko initChat ke andar s.on("connect", ...) ke baad add karein
-        s.on("receive-message", (msg: any) => {
-          // Update chat list for Sidebar real-time
-          setChatList((prev) => {
-            const filtered = prev.filter(m => {
-              const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
-              const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
-              return p1 !== p2;
-            });
-            return [msg, ...filtered];
-          });
-
-          // Sound play logic: Agar message kisi aur ne bheja hai toh sound bajao
-          if (msg.senderId !== currentUser) {
-            const audio = new Audio("/notify.mp3"); // Path to your sound file
-            audio.play().catch(e => console.log("Sound error:", e));
-          }
-        });
-
-        // Listener for Ticks update
-        s.on("messages-read", ({ roomId }: { roomId: string }) => {
-          setChatList(prev => prev.map(m => m.roomId === roomId ? { ...m, readStatus: true } : m));
-        });
+        // s.on("messages-read", ({ roomId }: { roomId: string }) => {
+        //   setChatList(prev => prev.map(m => m.roomId === roomId ? { ...m, readStatus: true } : m));
+        // });
 
         s.on("init", ({ users, chats, onlineList }: any) => {
           console.log("RAW INIT DATA:", { users, chats, onlineList });
@@ -95,11 +76,51 @@ export default function ChatPage() {
     };
   }, [router]);
 
+  // useEffect(() => {
+  //   if (!socket || !currentUser) return;
+
+  //   const handleMsg = (msg: any) => {
+  //     // 1. ChatList update hamesha karo
+  //     setChatList((prev) => {
+  //       const filtered = prev.filter(m => {
+  //         const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
+  //         const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
+  //         return p1 !== p2;
+  //       });
+  //       return [msg, ...filtered];
+  //     });
+
+  //     // 2. Notification sirf tab dikhao jab msg MERA NA HO aur CHAT KHULI NA HO
+  //     const isMe = msg.senderId === currentUser;
+  //     const isChatOpen = msg.senderId === otherUser; // Kya main usse baat kar raha hoon?
+
+  //     if (!isMe) {
+  //       if (!isChatOpen || document.hidden) {
+  //         // SOUND BAJAO
+  //         new Audio("/notify.mp3").play().catch(() => { });
+
+  //         if (document.hidden) {
+  //           // System Notification
+  //           new Notification(`New message from ${msg.senderId}`, { body: msg.message });
+  //         } else {
+  //           // Toast
+  //           toast.success(`New message from ${msg.senderId}`);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   socket.on("receive-message", handleMsg);
+
+  //   return () => {
+  //     socket.off("receive-message", handleMsg);
+  //   };
+  // }, [socket, currentUser, chatList]);
+
   useEffect(() => {
     if (!socket || !currentUser) return;
 
     const handleMsg = (msg: any) => {
-      console.log("Naya Message Aaya:", msg);
       setChatList((prev) => {
         const filtered = prev.filter(m => {
           const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
@@ -109,18 +130,32 @@ export default function ChatPage() {
         return [msg, ...filtered];
       });
 
-      if (msg.senderId !== currentUser) {
-        const audio = new Audio("/notify.mp3");
-        audio.play().catch(e => console.log("Audio error:", e));
+      const isNotMe = msg.senderId !== currentUser;
+      const isNotCurrentChat = msg.senderId !== otherUser;
+
+      if (isNotMe && (document.hidden || isNotCurrentChat)) {
+        new Audio("/notify.mp3").play().catch(() => { });
+        if (document.hidden) {
+          new Notification(`New message from ${msg.senderId}`, { body: msg.message });
+        } else {
+          toast.success(`New message from ${msg.senderId}`);
+        }
       }
     };
 
+    const handleReadUpdate = ({ roomId }: { roomId: string }) => {
+      setChatList(prev => prev.map(m => m.roomId === roomId ? { ...m, readStatus: true } : m));
+    };
+
     socket.on("receive-message", handleMsg);
+    socket.on("messages-read-update", handleReadUpdate);
 
     return () => {
       socket.off("receive-message", handleMsg);
+      socket.off("messages-read-update", handleReadUpdate);
     };
-  }, [socket, currentUser, chatList]);
+
+  }, [socket, currentUser, otherUser]);
 
   const handleSelectUser = (user: string) => {
     setOtherUser(user);
@@ -146,6 +181,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-[700px] bg-gray-100 p-4">
+      <Toaster />
       <div className="flex w-full max-w-7xl mx-auto bg-white overflow-hidden shadow-2xl rounded-3xl border border-gray-200">
         <Sidebar
           currentUser={currentUser}

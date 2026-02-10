@@ -30,8 +30,15 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
 
     socket.on("receive-message", (msg: any) => {
       if (msg.roomId === roomId) {
-        setMessages(prev => [...prev, msg]);
-        if (msg.receiverId === currentUser) socket.emit("mark-as-read", { roomId, username: currentUser });
+        setMessages((prev) => {
+          const isDuplicate = prev.some(m => m._id === msg._id);
+          if (isDuplicate) return prev;
+          return [...prev, msg];
+        });
+
+        if (msg.receiverId === currentUser) {
+          socket.emit("mark-as-read", { roomId, username: currentUser });
+        }
       }
     });
 
@@ -131,7 +138,9 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
       <div className="flex-1 overflow-y-auto p-4 space-y-1 bg-[#f0f2f5]">
         {messages.map((m, i) => (
           <MessageItem
-            key={m._id || i}
+            // key={m._id || i}
+            // m={m}
+            key={`${m._id}-${i}`}
             m={m}
             currentUser={currentUser}
             onDeleteMe={deleteForMe}

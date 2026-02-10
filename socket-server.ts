@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
 
-
   // socket.on("send-message", async (data) => {
   //   try {
   //     const isReceiverOnline = onlineUsers.has(data.receiverId);
@@ -83,21 +82,30 @@ io.on("connection", (socket) => {
   //   }
   // });
 
+  // socket.on("send-message", async (data) => {
+  //   try {
+  //     const msg = await Message.create({ ...data });
+
+  //     io.to(data.roomId).emit("receive-message", msg);
+
+  //     const receiverSocketId = onlineUsers.get(data.receiverId);
+  //     if (receiverSocketId) {
+  //       io.to(receiverSocketId).emit("receive-message", msg);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error sending message:", err);
+  //   }
+  // });
+
   socket.on("send-message", async (data) => {
     try {
       const msg = await Message.create({ ...data });
-
       io.to(data.roomId).emit("receive-message", msg);
-
-      const receiverSocketId = onlineUsers.get(data.receiverId);
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("receive-message", msg);
-      }
     } catch (err) {
       console.error("Error sending message:", err);
     }
   });
-
+  
   socket.on("mark-as-read", async ({ roomId, username }) => {
     try {
       await Message.updateMany(
