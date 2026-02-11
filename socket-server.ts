@@ -7,7 +7,7 @@ import { Message } from "./models/Message";
 import { User } from "./models/User";
 
 const MONGO_URI = process.env.MONGO_URI!;
-const FRONTEND_URL = process.env.FRONTEND_URL || "";
+//const FRONTEND_URL = process.env.FRONTEND_URL || "";
 const PORT = Number(process.env.PORT) || 10000;
 
 mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));

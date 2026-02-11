@@ -4,7 +4,7 @@ import { io, Socket } from "socket.io-client";
 import Sidebar from "@/components/Sidebar";
 import ChatWindow from "@/components/ChatWindow";
 import { useRouter } from "next/navigation";
-import { Toaster, toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast'
 
 export default function ChatPage() {
   const [socket, setSocket] = useState<Socket | null>(null);
