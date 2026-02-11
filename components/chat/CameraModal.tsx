@@ -62,11 +62,39 @@ export default function CameraModal({ onCapture, onClose }: { onCapture: (blob: 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
+  // useEffect(() => {
+  //   async function startCamera() {
+  //     try {
+  //       const s = await navigator.mediaDevices.getUserMedia({
+  //         // ✅ HD Quality Settings
+  //         video: {
+  //           facingMode: "user",
+  //           width: { ideal: 1280 },
+  //           height: { ideal: 720 }
+  //         },
+  //         audio: false
+  //       });
+  //       setStream(s);
+  //       if (videoRef.current) videoRef.current.srcObject = s;
+  //     } catch (err) {
+  //       console.error("Camera access denied", err);
+  //       onClose();
+  //     }
+  //   }
+  //   startCamera();
+
+  //   // ✅ Cleanup: Camera band karne ke liye
+  //   return () => {
+  //     if (s) s.getTracks().forEach(track => track.stop());
+  //   };
+  // }, []);
+
   useEffect(() => {
+    let activeStream: MediaStream | null = null; // Ek local variable banalo
+
     async function startCamera() {
       try {
         const s = await navigator.mediaDevices.getUserMedia({
-          // ✅ HD Quality Settings
           video: {
             facingMode: "user",
             width: { ideal: 1280 },
@@ -74,6 +102,7 @@ export default function CameraModal({ onCapture, onClose }: { onCapture: (blob: 
           },
           audio: false
         });
+        activeStream = s; // Yahan stream save karo
         setStream(s);
         if (videoRef.current) videoRef.current.srcObject = s;
       } catch (err) {
@@ -83,9 +112,11 @@ export default function CameraModal({ onCapture, onClose }: { onCapture: (blob: 
     }
     startCamera();
 
-    // ✅ Cleanup: Camera band karne ke liye
+    // ✅ Cleanup: Ab 'activeStream' use karo, error nahi aayegi
     return () => {
-      if (s) s.getTracks().forEach(track => track.stop());
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+      }
     };
   }, []);
 
