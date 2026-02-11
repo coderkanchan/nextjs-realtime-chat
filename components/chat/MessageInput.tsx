@@ -85,10 +85,40 @@ export default function MessageInput(
     }
   };
 
+  // const handleFinalSend = async () => {
+  //   if (!selectedFile) return;
+  //   setIsUploading(true);
+  //   const captionText = input;
+  //   setInput("");
+  //   setImagePreview(null);
+
+  //   const formData = new FormData();
+  //   formData.append("file", selectedFile);
+  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+
+  //   try {
+  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+  //       method: "POST", body: formData
+  //     });
+  //     const data = await res.json();
+  //     if (data.secure_url) {
+  //       onSendMessage(data.secure_url, 'image', captionText);
+  //     }
+  //   } catch (err) {
+  //     console.error("Upload failed", err);
+  //   } finally {
+  //     setIsUploading(false);
+  //     setSelectedFile(null);
+  //     socket.emit("stop-typing", { roomId, senderId: currentUser });
+  //   }
+  // };
+
   const handleFinalSend = async () => {
     if (!selectedFile) return;
     setIsUploading(true);
     const captionText = input;
+
+    // Input turant clear kar do taaki UI fast lage
     setInput("");
     setImagePreview(null);
 
@@ -98,7 +128,8 @@ export default function MessageInput(
 
     try {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-        method: "POST", body: formData
+        method: "POST",
+        body: formData
       });
       const data = await res.json();
       if (data.secure_url) {
@@ -106,13 +137,17 @@ export default function MessageInput(
       }
     } catch (err) {
       console.error("Upload failed", err);
+      // Yahan ek error toast dikha sakte ho
+      alert("Photo send nahi ho payi, fir se try karein!");
     } finally {
+      // ✅ YE HAI CLEANUP: Ye block hamesha chalega
       setIsUploading(false);
       setSelectedFile(null);
-      socket.emit("stop-typing", { roomId, senderId: currentUser });
+      if (socket && roomId) {
+        socket.emit("stop-typing", { roomId, senderId: currentUser });
+      }
     }
   };
-
 
   return (
     <div className="relative border-t bg-white">
