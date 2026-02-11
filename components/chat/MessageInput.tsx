@@ -196,6 +196,7 @@ export default function MessageInput(
           <button
             type="button"
             onClick={() => setIsCameraOpen(true)}
+            disabled={isUploading}
             className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
           >
             <IoIosCamera className="text-2xl" />
