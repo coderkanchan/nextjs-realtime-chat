@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { IoIosSend } from "react-icons/io";
+import { IoIosSend, IoIosCamera } from "react-icons/io";
+import CameraModal from "./CameraModal";
 
 export default function MessageInput(
   {
@@ -14,6 +15,7 @@ export default function MessageInput(
   const [input, setInput] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -34,6 +36,30 @@ export default function MessageInput(
   const handleBlur = () => {
     if (socket && roomId) {
       socket.emit("stop-typing", { roomId, senderId: currentUser });
+    }
+  };
+
+  const handleCameraCapture = async (blob: Blob) => {
+    setIsCameraOpen(false);
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", blob, "camera_photo.jpg");
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (data.secure_url) {
+        onSendMessage(data.secure_url, 'image', "");
+      }
+    } catch (err) {
+      console.error("Camera upload failed", err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -73,8 +99,17 @@ export default function MessageInput(
     }
   };
 
+
   return (
     <div className="relative border-t bg-white">
+
+      {isCameraOpen && (
+        <CameraModal
+          onCapture={handleCameraCapture}
+          onClose={() => setIsCameraOpen(false)}
+        />
+      )}
+
       {imagePreview && (
         <div className="absolute bottom-full left-0 w-full bg-blue-50 p-4 border-t-2 border-blue-200 shadow-2xl flex flex-col items-center animate-in slide-in-from-bottom-2">
           <div className="relative group mb-3">
@@ -113,7 +148,7 @@ export default function MessageInput(
           </button>
 
           <input type="file" hidden ref={fileInputRef} accept="image/*" onChange={handleFileSelect} />
-          
+
           <input
             className="flex-1 bg-gray-100 p-2.5 px-5 rounded-full outline-none text-sm focus:bg-white border focus:border-blue-200 transition-all text-gray-600"
             placeholder="Type a message..."
