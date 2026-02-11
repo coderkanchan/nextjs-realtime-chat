@@ -39,28 +39,42 @@ export default function MessageInput(
     }
   };
 
-  const handleCameraCapture = async (blob: Blob) => {
+  // const handleCameraCapture = async (blob: Blob) => {
+  //   setIsCameraOpen(false);
+  //   setIsUploading(true);
+
+  //   const formData = new FormData();
+  //   formData.append("file", blob, "camera_photo.jpg");
+  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+
+  //   try {
+  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+  //       method: "POST",
+  //       body: formData
+  //     });
+  //     const data = await res.json();
+  //     if (data.secure_url) {
+  //       onSendMessage(data.secure_url, 'image', "");
+  //     }
+  //   } catch (err) {
+  //     console.error("Camera upload failed", err);
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
+
+  const handleCameraCapture = (blob: Blob) => {
+    // 1. Camera close karo
     setIsCameraOpen(false);
-    setIsUploading(true);
 
-    const formData = new FormData();
-    formData.append("file", blob, "camera_photo.jpg");
-    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+    // 2. Blob ko "File" object mein convert karo taaki hum use state mein rakh sakein
+    const file = new File([blob], `camera_${Date.now()}.jpg`, { type: "image/jpeg" });
 
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      if (data.secure_url) {
-        onSendMessage(data.secure_url, 'image', "");
-      }
-    } catch (err) {
-      console.error("Camera upload failed", err);
-    } finally {
-      setIsUploading(false);
-    }
+    // 3. States update karo (Ye wahi states hain jo gallery selection mein use hoti hain)
+    setSelectedFile(file);
+    setImagePreview(URL.createObjectURL(file));
+
+    // Note: Humne yahan 'upload' call nahi kiya, ab user 'Send' button dabayega tab upload hoga.
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,8 +154,17 @@ export default function MessageInput(
 
         </div>
       )}
+
       {!imagePreview && (
         <div className="p-3 flex gap-2 items-center">
+
+          <button
+            type="button"
+            onClick={() => setIsCameraOpen(true)}
+            className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+          >
+            <IoIosCamera className="text-2xl" />
+          </button>
 
           <button onClick={() => fileInputRef.current?.click()} className="p-2 text-gray-400 hover:text-blue-600">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
