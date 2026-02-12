@@ -7,7 +7,6 @@ import { Message } from "./models/Message";
 import { User } from "./models/User";
 
 const MONGO_URI = process.env.MONGO_URI!;
-//const FRONTEND_URL = process.env.FRONTEND_URL || "";
 const PORT = Number(process.env.PORT) || 10000;
 
 mongoose.connect(MONGO_URI).then(() => console.log("✅ MongoDB Connected"));
@@ -65,37 +64,6 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`User joined room: ${roomId}`);
   });
-
-  // socket.on("send-message", async (data) => {
-  //   try {
-  //     const isReceiverOnline = onlineUsers.has(data.receiverId);
-
-  //     const msg = await Message.create({
-  //       ...data,
-  //       readStatus: false,
-  //       deliveryStatus: isReceiverOnline ? 'delivered' : 'sent'
-  //     });
-
-  //     io.to(data.roomId).emit("receive-message", msg);
-  //   } catch (err) {
-  //     console.error("Error sending message:", err);
-  //   }
-  // });
-
-  // socket.on("send-message", async (data) => {
-  //   try {
-  //     const msg = await Message.create({ ...data });
-
-  //     io.to(data.roomId).emit("receive-message", msg);
-
-  //     const receiverSocketId = onlineUsers.get(data.receiverId);
-  //     if (receiverSocketId) {
-  //       io.to(receiverSocketId).emit("receive-message", msg);
-  //     }
-  //   } catch (err) {
-  //     console.error("Error sending message:", err);
-  //   }
-  // });
 
   socket.on("send-message", async (data) => {
     try {

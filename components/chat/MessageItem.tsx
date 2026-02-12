@@ -135,6 +135,13 @@ export default function MessageItem({
           </div>
         </div>
       )}
+
+      {m.type === 'audio' && (
+        <audio controls className="max-w-[200px] h-10 mt-2">
+          <source src={m.message} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
     </>
   );
 }

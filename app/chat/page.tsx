@@ -48,10 +48,6 @@ export default function ChatPage() {
           s.emit("init", { username });
         });
 
-        // s.on("messages-read", ({ roomId }: { roomId: string }) => {
-        //   setChatList(prev => prev.map(m => m.roomId === roomId ? { ...m, readStatus: true } : m));
-        // });
-
         s.on("init", ({ users, chats, onlineList }: any) => {
           console.log("RAW INIT DATA:", { users, chats, onlineList });
           setAllUsers(users);
@@ -75,47 +71,6 @@ export default function ChatPage() {
       if (socket) socket.disconnect();
     };
   }, [router]);
-
-  // useEffect(() => {
-  //   if (!socket || !currentUser) return;
-
-  //   const handleMsg = (msg: any) => {
-  //     // 1. ChatList update hamesha karo
-  //     setChatList((prev) => {
-  //       const filtered = prev.filter(m => {
-  //         const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
-  //         const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
-  //         return p1 !== p2;
-  //       });
-  //       return [msg, ...filtered];
-  //     });
-
-  //     // 2. Notification sirf tab dikhao jab msg MERA NA HO aur CHAT KHULI NA HO
-  //     const isMe = msg.senderId === currentUser;
-  //     const isChatOpen = msg.senderId === otherUser; // Kya main usse baat kar raha hoon?
-
-  //     if (!isMe) {
-  //       if (!isChatOpen || document.hidden) {
-  //         // SOUND BAJAO
-  //         new Audio("/notify.mp3").play().catch(() => { });
-
-  //         if (document.hidden) {
-  //           // System Notification
-  //           new Notification(`New message from ${msg.senderId}`, { body: msg.message });
-  //         } else {
-  //           // Toast
-  //           toast.success(`New message from ${msg.senderId}`);
-  //         }
-  //       }
-  //     }
-  //   };
-
-  //   socket.on("receive-message", handleMsg);
-
-  //   return () => {
-  //     socket.off("receive-message", handleMsg);
-  //   };
-  // }, [socket, currentUser, chatList]);
 
   useEffect(() => {
     if (!socket || !currentUser) return;

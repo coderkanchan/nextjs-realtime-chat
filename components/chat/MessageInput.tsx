@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { IoIosSend, IoIosCamera } from "react-icons/io";
+import { IoIosSend, IoIosCamera, IoMdMic } from "react-icons/io";
 import CameraModal from "./CameraModal";
 
 export default function MessageInput(
@@ -17,6 +17,9 @@ export default function MessageInput(
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
     if (!socket || !roomId) return;
@@ -39,42 +42,13 @@ export default function MessageInput(
     }
   };
 
-  // const handleCameraCapture = async (blob: Blob) => {
-  //   setIsCameraOpen(false);
-  //   setIsUploading(true);
-
-  //   const formData = new FormData();
-  //   formData.append("file", blob, "camera_photo.jpg");
-  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
-
-  //   try {
-  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-  //       method: "POST",
-  //       body: formData
-  //     });
-  //     const data = await res.json();
-  //     if (data.secure_url) {
-  //       onSendMessage(data.secure_url, 'image', "");
-  //     }
-  //   } catch (err) {
-  //     console.error("Camera upload failed", err);
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
-
   const handleCameraCapture = (blob: Blob) => {
-    // 1. Camera close karo
     setIsCameraOpen(false);
 
-    // 2. Blob ko "File" object mein convert karo taaki hum use state mein rakh sakein
     const file = new File([blob], `camera_${Date.now()}.jpg`, { type: "image/jpeg" });
 
-    // 3. States update karo (Ye wahi states hain jo gallery selection mein use hoti hain)
     setSelectedFile(file);
     setImagePreview(URL.createObjectURL(file));
-
-    // Note: Humne yahan 'upload' call nahi kiya, ab user 'Send' button dabayega tab upload hoga.
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,40 +59,11 @@ export default function MessageInput(
     }
   };
 
-  // const handleFinalSend = async () => {
-  //   if (!selectedFile) return;
-  //   setIsUploading(true);
-  //   const captionText = input;
-  //   setInput("");
-  //   setImagePreview(null);
-
-  //   const formData = new FormData();
-  //   formData.append("file", selectedFile);
-  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
-
-  //   try {
-  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-  //       method: "POST", body: formData
-  //     });
-  //     const data = await res.json();
-  //     if (data.secure_url) {
-  //       onSendMessage(data.secure_url, 'image', captionText);
-  //     }
-  //   } catch (err) {
-  //     console.error("Upload failed", err);
-  //   } finally {
-  //     setIsUploading(false);
-  //     setSelectedFile(null);
-  //     socket.emit("stop-typing", { roomId, senderId: currentUser });
-  //   }
-  // };
-
   const handleFinalSend = async () => {
     if (!selectedFile) return;
     setIsUploading(true);
     const captionText = input;
 
-    // Input turant clear kar do taaki UI fast lage
     setInput("");
     setImagePreview(null);
 
@@ -137,15 +82,66 @@ export default function MessageInput(
       }
     } catch (err) {
       console.error("Upload failed", err);
-      // Yahan ek error toast dikha sakte ho
       alert("Photo send nahi ho payi, fir se try karein!");
     } finally {
-      // ✅ YE HAI CLEANUP: Ye block hamesha chalega
       setIsUploading(false);
       setSelectedFile(null);
       if (socket && roomId) {
         socket.emit("stop-typing", { roomId, senderId: currentUser });
       }
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mpeg' });
+        await uploadAudio(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Mic access denied", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const uploadAudio = async (blob: Blob) => {
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", blob, "voice_note.mp3");
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (data.secure_url) {
+        onSendMessage(data.secure_url, 'audio', ""); 
+      }
+    } catch (err) {
+      console.error("Audio upload failed", err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -222,9 +218,29 @@ export default function MessageInput(
               }
             }}
           />
-          <button onClick={() => { if (input.trim()) { onSendMessage(input, 'text'); setInput(""); } }} className="bg-blue-600 text-2xl flex items-center justify-center text-white py-2 px-4 rounded-full font-bold hover:bg-blue-100 hover:text-blue-600 hover:scale-110   transition-all duration-300">
+
+          {input.trim() || imagePreview ? (
+            <button
+              onClick={() => { if (input.trim()) { onSendMessage(input, 'text'); setInput(""); } }}
+              className="bg-blue-600 text-2xl flex items-center justify-center text-white py-2 px-4 rounded-full font-bold hover:bg-blue-100 hover:text-blue-600 hover:scale-110   transition-all duration-300">
+              <IoIosSend />
+            </button>
+          ) : (
+            <button
+              onMouseDown={startRecording}
+              onMouseUp={stopRecording}
+              onTouchStart={startRecording} 
+              onTouchEnd={stopRecording}
+              className={`p-3 rounded-full cursor-pointer transition-all ${isRecording ? 'bg-red-500 animate-pulse text-white' : 'bg-blue-600 text-white'}`}
+            >
+              <IoMdMic size={24} />
+            </button>
+          )}
+
+          {/* <button 
+          onClick={() => { if (input.trim()) { onSendMessage(input, 'text'); setInput(""); } }} className="bg-blue-600 text-2xl flex items-center justify-center text-white py-2 px-4 rounded-full font-bold hover:bg-blue-100 hover:text-blue-600 hover:scale-110   transition-all duration-300">
             <IoIosSend />
-          </button>
+          </button> */}
         </div>
       )}
     </div>
