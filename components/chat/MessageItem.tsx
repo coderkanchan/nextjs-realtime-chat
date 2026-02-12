@@ -20,13 +20,6 @@ export default function MessageItem({
 
   if (m.deletedFor?.includes(currentUser)) return null;
 
-  // const isImage =
-  //   m.messageType === 'image' ||
-  //   (typeof m.message === 'string' && (
-  //     m.message.includes("cloudinary.com") ||
-  //     m.message.match(/\.(jpeg|jpg|gif|png|webp|jfif)/i)
-  //   ));
-
   const formatTime = (time: string) => {
     if (!time) return "";
     return new Date(time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
@@ -45,7 +38,12 @@ export default function MessageItem({
 
   const isAudio = m.messageType === 'audio' || m.type === 'audio' || (typeof m.message === 'string' && m.message.includes(".mp3"));
 
-  const isImage = (m.messageType === 'image' || m.type === 'image') && !isAudio;
+  const isImage =
+    (m.messageType === 'image' || m.type === 'image') ||
+    (typeof m.message === 'string' && (
+      m.message.includes("cloudinary.com/dx6q4zunx/image/upload") ||
+      m.message.match(/\.(jpeg|jpg|gif|png|webp|jfif)/i)
+    )) && !isAudio;
 
   return (
     <>
