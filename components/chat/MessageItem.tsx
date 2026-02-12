@@ -20,12 +20,12 @@ export default function MessageItem({
 
   if (m.deletedFor?.includes(currentUser)) return null;
 
-  const isImage =
-    m.messageType === 'image' ||
-    (typeof m.message === 'string' && (
-      m.message.includes("cloudinary.com") ||
-      m.message.match(/\.(jpeg|jpg|gif|png|webp|jfif)/i)
-    ));
+  // const isImage =
+  //   m.messageType === 'image' ||
+  //   (typeof m.message === 'string' && (
+  //     m.message.includes("cloudinary.com") ||
+  //     m.message.match(/\.(jpeg|jpg|gif|png|webp|jfif)/i)
+  //   ));
 
   const formatTime = (time: string) => {
     if (!time) return "";
@@ -42,6 +42,10 @@ export default function MessageItem({
     link.click();
     document.body.removeChild(link);
   };
+
+  const isAudio = m.messageType === 'audio' || m.type === 'audio' || (typeof m.message === 'string' && m.message.includes(".mp3"));
+
+  const isImage = (m.messageType === 'image' || m.type === 'image') && !isAudio;
 
   return (
     <>
@@ -105,6 +109,12 @@ export default function MessageItem({
                       </div>
                     )}
                   </div>
+                ) : isAudio ? (
+                  <div className="p-2 min-w-[200px]">
+                    <audio controls className="w-full h-8 invert opacity-80">
+                      <source src={m.message} type="audio/mpeg" />
+                    </audio>
+                  </div>
                 ) : (
                   <div className="px-4 py-2 text-lg wrap-break-words whitespace-pre-wrap font-medium">
                     {m.message}
@@ -134,13 +144,6 @@ export default function MessageItem({
             {m.caption && <p className="text-white mt-4 bg-black/50 px-6 py-2 rounded-full font-medium">{m.caption}</p>}
           </div>
         </div>
-      )}
-
-      {m.type === 'audio' && (
-        <audio controls className="max-w-[200px] h-10 mt-2">
-          <source src={m.message} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
       )}
     </>
   );

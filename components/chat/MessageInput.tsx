@@ -136,7 +136,7 @@ export default function MessageInput(
       });
       const data = await res.json();
       if (data.secure_url) {
-        onSendMessage(data.secure_url, 'audio', ""); 
+        onSendMessage(data.secure_url, 'audio', "");
       }
     } catch (err) {
       console.error("Audio upload failed", err);
@@ -204,20 +204,29 @@ export default function MessageInput(
 
           <input type="file" hidden ref={fileInputRef} accept="image/*" onChange={handleFileSelect} />
 
-          <input
-            className="flex-1 bg-gray-100 p-2.5 px-5 rounded-full outline-none text-sm focus:bg-white border focus:border-blue-200 transition-all text-gray-600"
-            placeholder="Type a message..."
-            value={input}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                onSendMessage(input, 'text');
-                setInput("");
-              }
-            }}
-          />
+          {/* <div className="flex-1 relative"> */}
+          {isRecording ? (
+            <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-500 rounded-full animate-pulse">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <span className="text-xs font-bold">Recording Voice Note...</span>
+            </div>
+          ) : (
+            <input
+              className="flex-1 bg-gray-100 p-2.5 px-5 rounded-full outline-none text-sm focus:bg-white border focus:border-blue-200 transition-all text-gray-600"
+              placeholder="Type a message..."
+              value={input}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && input.trim()) {
+                  onSendMessage(input, 'text');
+                  setInput("");
+                }
+              }}
+            />
+          )}
+          {/* </div> */}
 
           {input.trim() || imagePreview ? (
             <button
@@ -229,7 +238,7 @@ export default function MessageInput(
             <button
               onMouseDown={startRecording}
               onMouseUp={stopRecording}
-              onTouchStart={startRecording} 
+              onTouchStart={startRecording}
               onTouchEnd={stopRecording}
               className={`p-3 rounded-full cursor-pointer transition-all ${isRecording ? 'bg-red-500 animate-pulse text-white' : 'bg-blue-600 text-white'}`}
             >
