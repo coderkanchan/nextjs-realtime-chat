@@ -177,7 +177,7 @@
 // app/chat/page.tsx
 "use client";
 import { Suspense } from "react";
-import ChatContent from "@/components/chat/ChatContent" 
+import ChatContent from "@/app/chat/ChatContent" 
 
 export default function ChatPage() {
   return (

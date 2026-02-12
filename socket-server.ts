@@ -65,9 +65,33 @@ io.on("connection", (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
 
+  // socket.on("send-message", async (data) => {
+  //   try {
+  //     if (!data.message || !data.roomId) return;
+
+  //     const msg = await Message.create({
+  //       roomId: data.roomId,
+  //       senderId: data.senderId,
+  //       receiverId: data.receiverId,
+  //       message: data.message,
+  //       messageType: data.messageType || 'text',
+  //       caption: data.caption || "",
+  //       readStatus: false,
+  //       deliveryStatus: 'sent'
+  //     });
+
+  //     io.to(data.roomId).emit("receive-message", msg);
+  //   } catch (err) {
+  //     console.error("Error saving to DB:", err);
+  //   }
+  // });
+
   socket.on("send-message", async (data) => {
     try {
       if (!data.message || !data.roomId) return;
+
+      // Check karo receiver online hai ya nahi
+      const isReceiverOnline = onlineUsers.has(data.receiverId);
 
       const msg = await Message.create({
         roomId: data.roomId,
@@ -77,7 +101,8 @@ io.on("connection", (socket) => {
         messageType: data.messageType || 'text',
         caption: data.caption || "",
         readStatus: false,
-        deliveryStatus: 'sent'
+        // Agar online hai toh 'delivered' status ke saath save karo
+        deliveryStatus: isReceiverOnline ? 'delivered' : 'sent'
       });
 
       io.to(data.roomId).emit("receive-message", msg);

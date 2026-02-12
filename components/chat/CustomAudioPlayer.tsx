@@ -35,11 +35,11 @@ export default function CustomAudioPlayer({ src, isMe }: { src: string; isMe: bo
 
       <div className="flex flex-col flex-1 gap-1">
         {/* Bars Animation */}
-        <div className="flex gap-[2px] items-end h-5">
+        <div className="flex gap-0.5 items-end h-5">
           {[...Array(18)].map((_, i) => (
             <div
               key={i}
-              className={`w-[2px] rounded-full transition-all duration-300 ${isMe ? 'bg-blue-200' : 'bg-gray-400'} ${isPlaying ? 'animate-bounce' : ''}`}
+              className={`w-0.5 rounded-full transition-all duration-300 ${isMe ? 'bg-blue-200' : 'bg-gray-400'} ${isPlaying ? 'animate-bounce' : ''}`}
               style={{
                 height: `${20 + Math.random() * 80}%`,
                 animationDelay: `${i * 0.05}s`
