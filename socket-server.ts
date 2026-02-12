@@ -65,15 +65,6 @@ io.on("connection", (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
 
-  // socket.on("send-message", async (data) => {
-  //   try {
-  //     const msg = await Message.create({ ...data });
-  //     io.to(data.roomId).emit("receive-message", msg);
-  //   } catch (err) {
-  //     console.error("Error sending message:", err);
-  //   }
-  // });
-
   socket.on("send-message", async (data) => {
     try {
       if (!data.message || !data.roomId) return;

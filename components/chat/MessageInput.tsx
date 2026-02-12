@@ -116,13 +116,6 @@ export default function MessageInput(
     }
   };
 
-  // const stopRecording = () => {
-  //   if (mediaRecorderRef.current && isRecording) {
-  //     mediaRecorderRef.current.stop();
-  //     setIsRecording(false);
-  //   }
-  // };
-
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
@@ -130,28 +123,6 @@ export default function MessageInput(
       mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
     }
   };
-
-  // const uploadAudio = async (blob: Blob) => {
-  //   setIsUploading(true);
-  //   const formData = new FormData();
-  //   formData.append("file", blob, "voice_note.mp3");
-  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
-
-  //   try {
-  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`, {
-  //       method: "POST",
-  //       body: formData
-  //     });
-  //     const data = await res.json();
-  //     if (data.secure_url) {
-  //       onSendMessage(data.secure_url, 'audio', "");
-  //     }
-  //   } catch (err) {
-  //     console.error("Audio upload failed", err);
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
 
   const uploadAudio = async (blob: Blob) => {
     setIsUploading(true);

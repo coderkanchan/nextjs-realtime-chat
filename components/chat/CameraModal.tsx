@@ -6,7 +6,7 @@ export default function CameraModal({ onCapture, onClose }: { onCapture: (blob: 
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    let activeStream: MediaStream | null = null; // Ek local variable banalo
+    let activeStream: MediaStream | null = null; 
 
     async function startCamera() {
       try {

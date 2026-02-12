@@ -3,17 +3,20 @@ import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import Sidebar from "@/components/Sidebar";
 import ChatWindow from "@/components/ChatWindow";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Toaster, toast } from 'react-hot-toast'
 
 export default function ChatPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const userFromURL = searchParams.get("u");
+  const [otherUser, setOtherUser] = useState<string | null>(userFromURL);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [currentUser, setCurrentUser] = useState<string>("");
-  const [otherUser, setOtherUser] = useState<string | null>(null);
   const [chatList, setChatList] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<string[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-  const router = useRouter();
+
 
   useEffect(() => {
     const initChat = async () => {
@@ -112,8 +115,14 @@ export default function ChatPage() {
 
   }, [socket, currentUser, otherUser]);
 
+  useEffect(() => {
+    if (userFromURL !== otherUser) {
+      setOtherUser(userFromURL);
+    }
+  }, [userFromURL]);
+
   const handleSelectUser = (user: string) => {
-    setOtherUser(user);
+    router.push(`/chat?u=${user}`);
   };
 
   const handleLogout = async () => {

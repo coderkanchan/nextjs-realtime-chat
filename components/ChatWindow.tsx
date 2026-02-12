@@ -67,18 +67,6 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
 
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isTyping]);
 
-  // const handleSendMessage = (content: string, type: 'text' | 'image', caption?: string) => {
-  //   if (!socket || !roomId) return;
-  //   socket.emit("send-message", {
-  //     roomId, 
-  //     senderId: currentUser, 
-  //     receiverId: otherUser,
-  //     message: content, 
-  //     messageType: type, 
-  //     caption: caption || ""
-  //   });
-  // };
-
   const handleSendMessage = (content: string, type: 'text' | 'image' | 'audio', caption?: string) => {
     if (!socket || !roomId) return;
 
