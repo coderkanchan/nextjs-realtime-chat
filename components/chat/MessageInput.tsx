@@ -116,12 +116,42 @@ export default function MessageInput(
     }
   };
 
+  // const stopRecording = () => {
+  //   if (mediaRecorderRef.current && isRecording) {
+  //     mediaRecorderRef.current.stop();
+  //     setIsRecording(false);
+  //   }
+  // };
+
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
     }
   };
+
+  // const uploadAudio = async (blob: Blob) => {
+  //   setIsUploading(true);
+  //   const formData = new FormData();
+  //   formData.append("file", blob, "voice_note.mp3");
+  //   formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "");
+
+  //   try {
+  //     const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+  //       method: "POST",
+  //       body: formData
+  //     });
+  //     const data = await res.json();
+  //     if (data.secure_url) {
+  //       onSendMessage(data.secure_url, 'audio', "");
+  //     }
+  //   } catch (err) {
+  //     console.error("Audio upload failed", err);
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
 
   const uploadAudio = async (blob: Blob) => {
     setIsUploading(true);
@@ -142,6 +172,7 @@ export default function MessageInput(
       console.error("Audio upload failed", err);
     } finally {
       setIsUploading(false);
+      setIsRecording(false);
     }
   };
 
@@ -204,11 +235,13 @@ export default function MessageInput(
 
           <input type="file" hidden ref={fileInputRef} accept="image/*" onChange={handleFileSelect} />
 
-          {/* <div className="flex-1 relative"> */}
+
           {isRecording ? (
-            <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-500 rounded-full animate-pulse">
-              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-              <span className="text-xs font-bold">Recording Voice Note...</span>
+            <div className="flex-1  rounded-full animate-pulse text-red-500 border border-red-400">
+              <div className="flex p-2.5 px-5 items-center gap-2  bg-red-100 rounded-full">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <span className="text-xs font-bold">Recording Voice Note...</span>
+              </div>
             </div>
           ) : (
             <input
@@ -226,7 +259,6 @@ export default function MessageInput(
               }}
             />
           )}
-          {/* </div> */}
 
           {input.trim() || imagePreview ? (
             <button
@@ -245,11 +277,6 @@ export default function MessageInput(
               <IoMdMic size={24} />
             </button>
           )}
-
-          {/* <button 
-          onClick={() => { if (input.trim()) { onSendMessage(input, 'text'); setInput(""); } }} className="bg-blue-600 text-2xl flex items-center justify-center text-white py-2 px-4 rounded-full font-bold hover:bg-blue-100 hover:text-blue-600 hover:scale-110   transition-all duration-300">
-            <IoIosSend />
-          </button> */}
         </div>
       )}
     </div>
