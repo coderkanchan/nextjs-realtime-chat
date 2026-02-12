@@ -1,4 +1,5 @@
 "use client";
+import CustomAudioPlayer from "./CustomAudioPlayer";
 import { useState } from "react";
 import { BiCheckDouble } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa6";
@@ -108,10 +109,8 @@ export default function MessageItem({
                     )}
                   </div>
                 ) : isAudio ? (
-                  <div className="p-2 min-w-[200px]">
-                    <audio controls className="w-full h-8 invert opacity-80">
-                      <source src={m.message} type="audio/mpeg" />
-                    </audio>
+                  <div className="p-1">
+                    <CustomAudioPlayer src={m.message} isMe={isMe} />
                   </div>
                 ) : (
                   <div className="px-4 py-2 text-lg wrap-break-words whitespace-pre-wrap font-medium">
