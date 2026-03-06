@@ -13,7 +13,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({
-  currentUser, otherUser, setOtherUser, chatList, allUsers, onlineUsers, onLogout, socket
+  currentUser,
+  otherUser,
+  setOtherUser,
+  chatList,
+  allUsers,
+  onlineUsers,
+  onLogout,
+  socket
 }: SidebarProps) {
   const [localChatList, setLocalChatList] = useState(chatList);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,9 +53,9 @@ export default function Sidebar({
       })
       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-   
+
     const discover = (allUsers || []).filter((u: any) => {
-      if (!u) return false; 
+      if (!u) return false;
       const name = typeof u === 'string' ? u : u.username;
       if (!name || name === currentUser) return false;
 
