@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { getPasswordStrength } from "@/utils/password";
+import { signIn } from "next-auth/react";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -49,7 +50,7 @@ export default function SignupPage() {
       return;
     }
 
-    toast.success("Account created successfully", { duration: 800 }); 
+    toast.success("Account created successfully", { duration: 800 });
     setTimeout(() => {
       router.push("/welcome");
     }, 800);
@@ -128,6 +129,22 @@ export default function SignupPage() {
           >
             {loading ? "Creating..." : "Sign Up"}
           </button>
+
+          <div className="mt-6">
+            <div className="relative flex items-center justify-center mb-4">
+              <div className="border-t w-full border-gray-300"></div>
+              <span className="bg-white px-3 text-sm text-gray-400 absolute">Or sign up with</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => signIn("google", { callbackUrl: "/chat" })}
+              className="w-full flex items-center justify-center gap-3 border border-gray-300 p-3 rounded-xl hover:bg-gray-50 transition-all text-black font-semibold shadow-sm"
+            >
+              <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
+              Sign up with Google
+            </button>
+          </div>
 
           <p className="mt-6 text-center text-base text-gray-500">
             Already a member?
