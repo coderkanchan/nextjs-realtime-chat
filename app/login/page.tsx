@@ -1,11 +1,11 @@
 "use client";
-
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
- 
+
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPass, setShowPass] = useState(false);
@@ -33,7 +33,7 @@ export default function LoginPage() {
     toast.success("Login successful", { duration: 800 });
 
     setTimeout(() => {
-      router.push("/welcome"); 
+      router.push("/welcome");
     }, 800);
   };
 
@@ -85,6 +85,20 @@ export default function LoginPage() {
             </Link>
           </p>
         </form>
+        <div className="mt-4 flex items-center justify-between">
+          <hr className="w-full border-gray-300" />
+          <span className="px-2 text-gray-400 text-sm">OR</span>
+          <hr className="w-full border-gray-300" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/welcome" })}
+          className="mt-4 w-full flex items-center justify-center gap-2 border p-3 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
+        >
+          <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
+          Continue with Google
+        </button>
       </div>
     </div>
   );

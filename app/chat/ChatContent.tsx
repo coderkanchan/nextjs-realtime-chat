@@ -132,7 +132,7 @@ export default function ChatPage() {
 
   const handleSelectUser = (user: string) => {
     router.push(`/chat?u=${user}`);
-  };
+  }; 
 
   const handleLogout = async () => {
     try {
