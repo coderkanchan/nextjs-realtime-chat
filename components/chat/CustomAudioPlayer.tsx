@@ -34,7 +34,7 @@ export default function CustomAudioPlayer({ src, isMe }: { src: string; isMe: bo
       </button>
 
       <div className="flex flex-col flex-1 gap-1">
-        {/* Bars Animation */}
+       
         <div className="flex gap-0.5 items-end h-5">
           {[...Array(18)].map((_, i) => (
             <div

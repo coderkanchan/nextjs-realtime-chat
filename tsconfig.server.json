@@ -11,5 +11,5 @@
     "rootDir": "./",
     "resolveJsonModule": true
   },
-  "include": ["socket-server.ts", "models/**/*.ts"] // सर्वर और मॉडल्स को शामिल करें
+  "include": ["socket-server.ts", "models/**/*.ts"] 
 }

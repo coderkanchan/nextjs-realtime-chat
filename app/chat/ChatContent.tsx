@@ -79,25 +79,14 @@ export default function ChatPage() {
     if (!socket || !currentUser) return;
 
     const handleMsg = (msg: any) => {
-      // setChatList((prev) => {
-      //   const filtered = prev.filter(m => {
-      //     const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
-      //     const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
-      //     return p1 !== p2;
-      //   });
-      //   return [msg, ...filtered];
-      // });
 
       setChatList((prev) => {
-        // Purane messages filter karo (existing logic)
         const filtered = prev.filter(m => {
           const p1 = m.senderId === currentUser ? m.receiverId : m.senderId;
           const p2 = msg.senderId === currentUser ? msg.receiverId : msg.senderId;
           return p1 !== p2;
         });
 
-        // Naye message mein check karo: agar main sender hoon aur receiver online hai
-        // toh double tick (delivered) dikhao turant
         const isMe = msg.senderId === currentUser;
         const isReceiverOnline = onlineUsers.includes(msg.receiverId);
 
