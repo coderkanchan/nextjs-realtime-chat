@@ -21,9 +21,10 @@ const handler = NextAuth({
 
         if (!existingUser) {
           await User.create({
-            username: user.name?.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
+            //username: user.name?.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
+            username: (user.name || "User").replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
             email: user.email,
-            password: "GOOGLE_AUTH_USER", 
+            password: "GOOGLE_AUTH_USER",
           });
         }
       }

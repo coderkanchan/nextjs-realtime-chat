@@ -78,6 +78,21 @@ export default function LoginPage() {
             {loading ? "Signing in..." : "Enter Chat"}
           </button>
 
+          <div className="mt-4 flex items-center justify-between">
+            <hr className="w-full border-gray-300" />
+            <span className="px-2 text-gray-400 text-sm">OR</span>
+            <hr className="w-full border-gray-300" />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/welcome" })}
+            className="mt-4 w-full flex items-center justify-center gap-2 border p-3 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
+          >
+            <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
+            Continue with Google
+          </button>
+
           <p className="mt-6 text-center text-base text-gray-500">
             New here?
             <Link href="/signup" className="text-blue-600 font-bold ml-1">
@@ -85,20 +100,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </form>
-        <div className="mt-4 flex items-center justify-between">
-          <hr className="w-full border-gray-300" />
-          <span className="px-2 text-gray-400 text-sm">OR</span>
-          <hr className="w-full border-gray-300" />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => signIn("google", { callbackUrl: "/welcome" })}
-          className="mt-4 w-full flex items-center justify-center gap-2 border p-3 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
-        >
-          <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
-          Continue with Google
-        </button>
+      
       </div>
     </div>
   );
