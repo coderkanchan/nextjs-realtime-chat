@@ -116,11 +116,21 @@ export default function MessageInput(
     }
   };
 
+  // const stopRecording = () => {
+  //   if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+  //     mediaRecorderRef.current.stop();
+  //     setIsRecording(false);
+  //     mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+  //   }
+  // };
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      mediaRecorderRef.current.stream.getTracks().forEach(track => {
+        track.stop();
+        track.enabled = false;
+      });
     }
   };
 
