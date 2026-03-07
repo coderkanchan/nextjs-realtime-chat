@@ -1,11 +1,10 @@
 "use client";
 import CustomAudioPlayer from "./CustomAudioPlayer";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { BiCheckDouble } from "react-icons/bi";
 import { FaCheck } from "react-icons/fa6";
-//import React from "react";
 
-export default function MessageItem({
+const MessageItem = memo(({
   m,
   currentUser,
   onDeleteMe,
@@ -15,7 +14,7 @@ export default function MessageItem({
   currentUser: string;
   onDeleteMe: (id: string) => void;
   onDeleteEveryone: (id: string) => void;
-}) {
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const isMe = m.senderId === currentUser;
@@ -145,4 +144,9 @@ export default function MessageItem({
       )}
     </>
   );
-}
+});
+
+
+MessageItem.displayName = "MessageItem";
+
+export default MessageItem;
