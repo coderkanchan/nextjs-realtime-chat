@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 interface SidebarProps {
   currentUser: string;
@@ -125,30 +126,6 @@ export default function Sidebar({
               }).toLowerCase()
               : "";
 
-            // return (
-            //   <div
-            //     key={partner} onClick={() =>
-            //       setOtherUser(partner)}
-            //     className={`px-2 py-1.5 rounded-2xl cursor-pointer mb-2 border-2 transition-all 
-            //   ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`
-            //     }>
-            //     <div className="flex justify-between items-center">
-            //       <span className="font-bold text-gray-700 flex items-center gap-1">
-            //         {partner}
-            //         <span className={`${isOnline ? "text-green-500" : "text-gray-400"} text-[14px]`}>●</span>
-            //       </span>
-            //       {unreadCounts[partner] > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full">{unreadCounts[partner]}</span>}
-            //     </div>
-            //     <div className="flex justify-between items-center mt-1">
-            //       <p className="text-[11px] truncate text-gray-400 w-2/3">
-            //         {isImageUrl(chat) ? "📷 Photo" : chat.message}
-            //       </p>
-            //       <p className="text-[9px] text-gray-400 font-medium">
-            //         {messageTime}
-            //       </p>
-            //     </div>
-            //   </div>
-            // );
             return (
               <div
                 key={partner}
@@ -159,7 +136,14 @@ export default function Sidebar({
 
                 <div className="relative">
                   {partnerImage ? (
-                    <img src={partnerImage} alt={partner} className="w-10 h-10 rounded-full object-cover border border-blue-100" />
+                    <Image
+                      src={partnerImage}
+                      alt={partner}
+                      width={40}
+                      height={40}
+                      className="rounded-full object-cover border border-blue-100"
+                      priority={true}
+                    />
                   ) : (
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm uppercase">
                       {partner[0]}
