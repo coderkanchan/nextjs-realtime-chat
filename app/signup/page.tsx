@@ -138,7 +138,7 @@ export default function SignupPage() {
 
             <button
               type="button"
-              onClick={() => signIn("google", { callbackUrl: "/chat" })}
+              onClick={() => signIn("google", { callbackUrl: "/welcome" })}
               className="w-full flex items-center justify-center gap-3 border border-gray-300 p-3 rounded-xl hover:bg-gray-50 transition-all text-black font-semibold shadow-sm"
             >
               <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
