@@ -26,6 +26,8 @@ export const authOptions: NextAuthOptions = {
           profileImage: user.image,
           fullName: user.name,
         });
+      } else if (!existingUser.image && user.image) {
+        await User.updateOne({ email: user.email }, { $set: { image: user.image } });
       }
       return true;
     },
