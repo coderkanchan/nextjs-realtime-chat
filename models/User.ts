@@ -5,7 +5,9 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
     isOnline: { type: Boolean, default: false },
-    lastSeen: { type: Date, default: Date.now }
+    lastSeen: { type: Date, default: Date.now },
+    image: { type: String },
+    fullName: { type: String },
 }, { timestamps: true });
 
 export const User = mongoose.models.User || mongoose.model("User", UserSchema);
