@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {
   currentUser: string;
@@ -8,7 +9,7 @@ interface SidebarProps {
   chatList: any[];
   allUsers: any[];
   onlineUsers: string[];
-  onLogout: () => void;
+  //onLogout: () => void;
   socket: any;
 }
 
@@ -19,7 +20,6 @@ export default function Sidebar({
   chatList,
   allUsers,
   onlineUsers,
-  onLogout,
   socket
 }: SidebarProps) {
   const [localChatList, setLocalChatList] = useState(chatList);
@@ -80,6 +80,12 @@ export default function Sidebar({
     }).toLowerCase();
   };
 
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+
+    await signOut({ callbackUrl: "/login" });
+  };
+
   return (
     <div className="w-1/4 bg-blue-50 border-r flex flex-col h-full p-4 shadow-inner">
       <div className="mb-4 flex justify-between items-start">
@@ -87,7 +93,7 @@ export default function Sidebar({
           <h2 className="text-2xl font-black text-blue-700">Chats</h2>
           <p className="text-[10px] font-bold text-gray-500 uppercase">User: {currentUser}</p>
         </div>
-        <button onClick={onLogout}
+        <button onClick={handleLogout}
           className="text-[10px] font-bold text-red-500 hover:bg-red-50 px-2 py-1 rounded-md border border-red-100 uppercase transition-all">
           Logout
         </button>
