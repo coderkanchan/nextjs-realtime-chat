@@ -9,6 +9,7 @@ interface SidebarProps {
   chatList: any[];
   allUsers: any[];
   onlineUsers: string[];
+  onLogout: () => void;
   socket: any;
 }
 
@@ -16,6 +17,7 @@ export default function Sidebar({
   currentUser,
   otherUser,
   setOtherUser,
+  onLogout,
   chatList,
   allUsers,
   onlineUsers,
