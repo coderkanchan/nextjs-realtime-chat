@@ -87,7 +87,10 @@ export default function Sidebar({
           <h2 className="text-2xl font-black text-blue-700">Chats</h2>
           <p className="text-[10px] font-bold text-gray-500 uppercase">User: {currentUser}</p>
         </div>
-        <button onClick={onLogout} className="text-[10px] font-bold text-red-500 hover:bg-red-50 px-2 py-1 rounded-md border border-red-100 uppercase transition-all">Logout</button>
+        <button onClick={onLogout}
+          className="text-[10px] font-bold text-red-500 hover:bg-red-50 px-2 py-1 rounded-md border border-red-100 uppercase transition-all">
+          Logout
+        </button>
       </div>
       <input
         type="text"
