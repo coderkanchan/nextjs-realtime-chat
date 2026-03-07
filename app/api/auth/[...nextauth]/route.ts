@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
           username: (user?.name || "User").replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
           email: user.email,
           password: "GOOGLE_AUTH_USER",
-          profileImage: user.image,
+          image: user.image,
           fullName: user.name,
         });
       } else if (!existingUser.image && user.image) {
