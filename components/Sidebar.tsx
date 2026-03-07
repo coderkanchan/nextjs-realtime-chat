@@ -122,27 +122,68 @@ export default function Sidebar({
               }).toLowerCase()
               : "";
 
+            // return (
+            //   <div
+            //     key={partner} onClick={() =>
+            //       setOtherUser(partner)}
+            //     className={`px-2 py-1.5 rounded-2xl cursor-pointer mb-2 border-2 transition-all 
+            //   ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`
+            //     }>
+            //     <div className="flex justify-between items-center">
+            //       <span className="font-bold text-gray-700 flex items-center gap-1">
+            //         {partner}
+            //         <span className={`${isOnline ? "text-green-500" : "text-gray-400"} text-[14px]`}>●</span>
+            //       </span>
+            //       {unreadCounts[partner] > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full">{unreadCounts[partner]}</span>}
+            //     </div>
+            //     <div className="flex justify-between items-center mt-1">
+            //       <p className="text-[11px] truncate text-gray-400 w-2/3">
+            //         {isImageUrl(chat) ? "📷 Photo" : chat.message}
+            //       </p>
+            //       <p className="text-[9px] text-gray-400 font-medium">
+            //         {messageTime}
+            //       </p>
+            //     </div>
+            //   </div>
+            // );
             return (
               <div
-                key={partner} onClick={() =>
-                  setOtherUser(partner)}
-                className={`px-2 py-1.5 rounded-2xl cursor-pointer mb-2 border-2 transition-all 
-              ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`
+                key={partner}
+                onClick={() => setOtherUser(partner)}
+                className={`px-3 py-3 rounded-2xl cursor-pointer mb-2 border-2 transition-all flex items-center gap-3
+      ${otherUser === partner ? "bg-white border-blue-500 shadow-sm" : "bg-transparent border-gray-200"}`
                 }>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-gray-700 flex items-center gap-1">
-                    {partner}
-                    <span className={`${isOnline ? "text-green-500" : "text-gray-400"} text-[14px]`}>●</span>
-                  </span>
-                  {unreadCounts[partner] > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full">{unreadCounts[partner]}</span>}
+
+                <div className="relative">
+                  {partnerImage ? (
+                    <img src={partnerImage} alt={partner} className="w-10 h-10 rounded-full object-cover border border-blue-100" />
+                  ) : (
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm uppercase">
+                      {partner[0]}
+                    </div>
+                  )}
+                  {isOnline && (
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                  )}
                 </div>
-                <div className="flex justify-between items-center mt-1">
-                  <p className="text-[11px] truncate text-gray-400 w-2/3">
-                    {isImageUrl(chat) ? "📷 Photo" : chat.message}
-                  </p>
-                  <p className="text-[9px] text-gray-400 font-medium">
-                    {messageTime}
-                  </p>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-sm text-gray-700 truncate">{partner}</span>
+                    {unreadCounts[partner] > 0 && (
+                      <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                        {unreadCounts[partner]}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-[11px] truncate text-gray-400 w-full">
+                      {isImageUrl(chat) ? "📷 Photo" : chat.message}
+                    </p>
+                    <p className="text-[9px] text-gray-400 whitespace-nowrap ml-2">
+                      {messageTime}
+                    </p>
+                  </div>
                 </div>
               </div>
             );
