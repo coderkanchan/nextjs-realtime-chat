@@ -9,7 +9,6 @@ interface SidebarProps {
   chatList: any[];
   allUsers: any[];
   onlineUsers: string[];
-  //onLogout: () => void;
   socket: any;
 }
 
