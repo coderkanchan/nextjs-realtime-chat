@@ -161,7 +161,18 @@ export default function Sidebar({
                   className="flex items-center gap-3 p-2.5 rounded-xl cursor-pointer hover:bg-white border-2 border-transparent hover:border-blue-100 transition-all"
                 >
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs">
-                    {username[0].toUpperCase()}
+                    {/* {username[0].toUpperCase()} */}
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        alt={username}
+                        className="w-8 h-8 rounded-full object-cover border border-blue-100"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs uppercase">
+                        {username[0]}
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <div className="text-sm font-bold text-gray-700">{username}</div>

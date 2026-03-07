@@ -3,7 +3,15 @@ import { useEffect, useState, useRef } from "react";
 import MessageItem from "./chat/MessageItem";
 import MessageInput from "./chat/MessageInput";
 
-export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers, allUsers }: any) {
+export default function ChatWindow(
+  {
+    currentUser,
+    otherUser,
+    socket,
+    onlineUsers,
+    allUsers
+  }: any) {
+
   const [messages, setMessages] = useState<any[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -99,8 +107,6 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
     ));
   };
 
-  if (!otherUser) return <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-400 font-bold">Select a user to chat</div>;
-
   const targetUser = allUsers.find((u: any) =>
     (typeof u === 'string' ? u : u.username) === otherUser
   );
@@ -116,6 +122,8 @@ export default function ChatWindow({ currentUser, otherUser, socket, onlineUsers
       hour12: true
     }).toLowerCase();
   };
+
+  if (!otherUser) return <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-400 font-bold">Select a user to chat</div>;
 
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
