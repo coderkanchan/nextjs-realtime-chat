@@ -20,20 +20,31 @@ export const authOptions: NextAuthOptions = {
       const existingUser = await User.findOne({ email: user.email });
       if (!existingUser) {
         await User.create({
-
           username: (user?.name || "User").replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
           email: user.email,
           password: "GOOGLE_AUTH_USER",
+          profileImage: user.image,
+          fullName: user.name,
         });
       }
       return true;
     },
     async jwt({ token, user }) {
-      if (user) token.username = user.name;
+      if (user) {
+        token.username = user.name;
+        token.picture = user.image;
+      }
       return token;
     },
     async session({ session, token }) {
-      return { ...session, user: { ...session.user, username: token.username } };
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          username: token.username,
+          image: token.picture
+        }
+      };
     },
   },
 };
