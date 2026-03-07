@@ -107,9 +107,14 @@ export default function ChatWindow(
     ));
   };
 
-  const targetUser = allUsers.find((u: any) =>
-    (typeof u === 'string' ? u : u.username) === otherUser
-  );
+  // const targetUser = allUsers.find((u: any) =>
+  //   (typeof u === 'string' ? u : u.username) === otherUser
+  // );
+  // ChatWindow.tsx (Line 115 approx)
+  const targetUser = allUsers.find((u: any) => {
+    const name = typeof u === 'string' ? u : u.username;
+    return name?.toLowerCase() === otherUser?.toLowerCase();
+  });
 
   const isOnline = onlineUsers.includes(otherUser);
   const lastSeenTime = targetUser?.lastSeen;
