@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 import { User } from "@/models/User";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -16,7 +20,7 @@ export const authOptions: NextAuthOptions = {
       const existingUser = await User.findOne({ email: user.email });
       if (!existingUser) {
         await User.create({
-          
+
           username: (user?.name || "User").replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
           email: user.email,
           password: "GOOGLE_AUTH_USER",
