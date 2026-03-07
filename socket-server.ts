@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
       await User.findOneAndUpdate({ username }, { isOnline: true });
 
       const [users, chats] = await Promise.all([
-        User.find({}, "username lastSeen isOnline").lean(),
+        User.find({}, "username lastSeen isOnline image").lean(),
         Message.find({
           $or: [{ senderId: username }, { receiverId: username }],
         }).sort({ createdAt: -1 }).lean(),
