@@ -111,7 +111,10 @@ export default function Sidebar({
           <h4 className="text-[11px] font-extrabold text-gray-400 uppercase mb-3">Recent</h4>
           {recentChats.map((chat: any) => {
             const partner = chat.senderId === currentUser ? chat.receiverId : chat.senderId;
-            const partnerData = allUsers.find((u: any) => (u.username || u) === partner);
+            const partnerData = allUsers.find((u: any) => {
+              const name = typeof u === 'string' ? u : u.username;
+              return name?.toLowerCase() === partner?.toLowerCase();
+            });
             const partnerImage = partnerData?.image;
             const isOnline = onlineUsers.includes(partner);
             const messageTime = chat.createdAt
