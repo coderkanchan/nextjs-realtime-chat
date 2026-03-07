@@ -128,13 +128,22 @@ export default function ChatWindow(
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       <header className="p-3 border-b flex items-center gap-3 bg-white shadow-sm">
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+        {/* <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
           {otherUser[0].toUpperCase()}
-        </div>
+        </div> */}
+        {targetUser?.image ? (
+          <img
+            src={targetUser.image}
+            alt={otherUser}
+            className="w-10 h-10 rounded-full object-cover border border-blue-500 shadow-sm"
+          />
+        ) : (
+          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold uppercase shadow-sm">
+            {otherUser[0]}
+          </div>
+        )}
         <div>
-
           <div className="font-bold text-gray-800">{otherUser}</div>
-
           <p className="text-[11px] font-medium">
             {isOnline ? (
               isTyping ? (
