@@ -107,10 +107,6 @@ export default function ChatWindow(
     ));
   };
 
-  // const targetUser = allUsers.find((u: any) =>
-  //   (typeof u === 'string' ? u : u.username) === otherUser
-  // );
-  // ChatWindow.tsx (Line 115 approx)
   const targetUser = allUsers.find((u: any) => {
     const name = typeof u === 'string' ? u : u.username;
     return name?.toLowerCase() === otherUser?.toLowerCase();
@@ -128,14 +124,23 @@ export default function ChatWindow(
     }).toLowerCase();
   };
 
+  useEffect(() => {
+    if (otherUser) {
+      document.title = `Chat with ${otherUser} | NexusChat`;
+    } else {
+      document.title = "NexusChat | Messaging App";
+    }
+
+    return () => {
+      document.title = "NexusChat";
+    };
+  }, [otherUser]);
+
   if (!otherUser) return <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-400 font-bold">Select a user to chat</div>;
 
   return (
     <div className="flex-1 flex flex-col bg-white overflow-hidden">
       <header className="p-3 border-b flex items-center gap-3 bg-white shadow-sm">
-        {/* <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-          {otherUser[0].toUpperCase()}
-        </div> */}
         {targetUser?.image ? (
           <img
             src={targetUser.image}
