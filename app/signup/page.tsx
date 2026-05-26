@@ -82,7 +82,7 @@ export default function SignupPage() {
           <div className="relative mb-2">
             <input
               type={showPass ? "text" : "password"}
-              className="w-full border p-3 rounded-lg text-gray-700 outline-none"
+              className="w-full p-4 bg-white border border-gray-700 rounded-xl text-black outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
               placeholder="Password"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
