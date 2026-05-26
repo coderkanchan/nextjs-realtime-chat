@@ -39,7 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-lg">
+      <div className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-800 space-y-4">
         <form onSubmit={handleSubmit}>
           <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
             Login
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
           <input
             placeholder="Username"
-            className="w-full p-4 mb-4 bg-white border border-gray-700 rounded-lg text-black outline-none focus:border-blue-500 transition"
+            className="w-full p-4 bg-white border border-gray-700 rounded-xl text-black outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             onChange={(e) => setForm({ ...form, username: e.target.value })}
             required
           />
