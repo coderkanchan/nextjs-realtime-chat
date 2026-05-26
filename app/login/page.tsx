@@ -46,8 +46,9 @@ export default function LoginPage() {
           </h2>
 
           <input
-            className="w-full border p-3 mb-4 rounded-lg text-gray-700 outline-none"
-            placeholder="Username"
+            // className="w-full border p-3 mb-4 rounded-lg text-gray-700 outline-none"
+             placeholder="Username"
+            className="w-full p-4 mb-4 bg-white border border-gray-700 rounded-lg text-black outline-none focus:border-blue-500 transition"
             onChange={(e) => setForm({ ...form, username: e.target.value })}
             required
           />
@@ -100,7 +101,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </form>
-      
+
       </div>
     </div>
   );

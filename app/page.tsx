@@ -5,38 +5,59 @@ import { MessageCircle, Shield, Zap } from "lucide-react";
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gray-800 text-black font-sans">
-     
+
       <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
+
         <div className="flex items-center gap-2">
           <div className="bg-blue-600 p-2 rounded-lg">
             <MessageCircle className="text-white" />
           </div>
           <span className="text-xl text-white  font-bold tracking-tight">ChatFlow</span>
         </div>
+
         <div className="space-x-4">
-          <Link href="/login" className="text-white font-medium hover:text-blue-600 transition">Login</Link>
-          <Link href="/signup" className="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-blue-600 transition">Get Started</Link>
+          <Link href="/login" className="text-white font-medium hover:text-blue-600 transition">
+            Login
+          </Link>
+
+          <Link href="/signup" className="bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-blue-600 transition">
+            Get Started
+          </Link>
         </div>
+
       </nav>
 
-    
+
       <header className="max-w-7xl mx-auto px-6 py-20 text-center">
+
         <h1 className=" text-white text-6xl md:text-7xl font-bold mb-6 ">
           Connect with anyone, <br />
           <span className="text-blue-600 ">anywhere in real-time.</span>
         </h1>
+
         <p className="text-xl text-gray-200 max-w-2xl mx-auto mb-10">
           A professional messaging platform built for speed, security, and simplicity.
           No complex setups, just pure conversation.
         </p>
+
+
+      <blockquote className="text-center text-2xl font-semibold text-gray-900 italic dark:text-white">
+        When you look
+        <span className="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-500">
+          <span className="relative text-white dark:text-gray-950">annoyed</span>
+        </span>
+        all the time, people think that you're busy.
+      </blockquote>
+      
         <div className="flex justify-center gap-4">
           <Link href="/signup" className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-lg hover:shadow-gray-900 transition">
             Start Chatting Now
           </Link>
         </div>
+
       </header>
 
-  
+
       <section className="bg-gray-800 py-20">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
           <div className="p-8 bg-blue-100 hover:bg-white  hover:shodow-xl  cursor-pointer rounded-2xl border border-gray-100 shadow-sm">
