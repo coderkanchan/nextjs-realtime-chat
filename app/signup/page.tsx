@@ -65,7 +65,7 @@ export default function SignupPage() {
           </h2>
 
           <input
-            className="w-full border p-3 rounded-lg mb-4 text-gray-700 outline-none"
+            className="w-full p-4 bg-black border border-gray-700 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             placeholder="Username"
             onChange={(e) => setForm({ ...form, username: e.target.value })}
             required
