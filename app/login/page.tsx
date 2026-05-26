@@ -55,7 +55,6 @@ export default function LoginPage() {
           <div className="relative mb-6">
             <input
               type={showPass ? "text" : "password"}
-              //className="w-full border p-3 rounded-lg  text-gray-700 outline-none"
               className="w-full p-4 bg-white border border-gray-700 rounded-lg text-black outline-none focus:border-blue-500 transition pr-12"
               placeholder="Password"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -64,7 +63,6 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              //className="absolute right-3 top-3 text-gray-400"
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition cursor-pointer"
             >
               {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
