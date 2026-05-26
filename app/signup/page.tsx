@@ -57,10 +57,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-2xl">
-        <form onSubmit={handleSubmit}>
-          <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
+    <div className="flex items-center justify-center bg-gray-900 py-6">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-lg">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <h2 className="text-3xl font-bold mb- text-center text-blue-600">
             Create Account
           </h2>
 
@@ -90,7 +90,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-3 top-3 text-gray-400"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition cursor-pointer"
             >
               {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -123,20 +123,20 @@ export default function SignupPage() {
 
           <button
             disabled={loading}
-            className={`w-full text-lg  p-3 py-4 rounded-lg font-bold  
+            className={`w-full text-lg p-3 py-4 rounded-lg font-bold  
               ${loading ? "text-gray-500 disabled:bg-gray-300 cursor-not-allowed"
                 : "text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
           >
             {loading ? "Creating..." : "Sign Up"}
           </button>
 
-          <div className="mt-6">
+          <div className="mt-5">
             <div className="relative flex items-center justify-center mb-4">
               <div className="border-t w-full border-gray-300"></div>
               <span className="bg-white px-3 text-sm text-gray-400 absolute">Or sign up with</span>
             </div>
 
-            <button
+            <button 
               type="button"
               onClick={() => signIn("google", { callbackUrl: "/welcome" })}
               className="w-full flex items-center justify-center gap-3 border border-gray-300 p-4 rounded-xl hover:bg-gray-50 transition-all text-black font-semibold shadow-sm"
