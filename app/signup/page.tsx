@@ -73,7 +73,7 @@ export default function SignupPage() {
 
           <input
             type="email"
-            className="w-full p-4 bg-black border border-gray-700 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+            className="w-full p-4 bg-white border border-gray-700 rounded-xl text-black outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             placeholder="Email"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
