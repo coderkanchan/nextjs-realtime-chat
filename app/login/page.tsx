@@ -38,9 +38,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-white p-8 rounded-3xl shadow-2xl border border-gray-800 space-y-4">
-        <form onSubmit={handleSubmit}>
+    <div className="h-screen w-full flex items-center justify-center bg-gray-900">
+      <div className="bg-white w-full max-w-lg p-8 rounded-3xl shadow-2xl border border-gray-800 ">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
             Login
           </h2>
@@ -55,7 +55,7 @@ export default function LoginPage() {
           <div className="relative mb-6">
             <input
               type={showPass ? "text" : "password"}
-              className="w-full p-4 bg-white border border-gray-700 rounded-lg text-black outline-none focus:border-blue-500 transition pr-12"
+             className="w-full p-4 bg-white border border-gray-700 rounded-xl text-black outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
               placeholder="Password"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => signIn("google", { callbackUrl: "/welcome" })}
-            className="mt-4 w-full flex items-center justify-center gap-2 border p-3 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
+            className="mt-4 w-full flex items-center justify-center gap-2 border p-4 rounded-lg hover:bg-gray-50 transition font-semibold text-gray-700"
           >
             <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
             Continue with Google
