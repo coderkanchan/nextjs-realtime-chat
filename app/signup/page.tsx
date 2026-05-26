@@ -113,7 +113,7 @@ export default function SignupPage() {
 
           <input
             type="password"
-            className="w-full border p-3 mb-4 rounded-lg  text-gray-700 outline-none"
+            className="w-full p-4 bg-white border border-gray-700 rounded-xl text-black outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             placeholder="Confirm Password"
             onChange={(e) =>
               setForm({ ...form, confirmPassword: e.target.value })
